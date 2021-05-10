@@ -367,6 +367,8 @@ class DataPusher : public Pusher
 {
 public:
 	virtual void   Paint(Draw& draw);
+	virtual Value  GetData() const;
+	virtual void   SetData(const Value& value);
 
 private:
 	const Convert *convert;
@@ -391,15 +393,11 @@ protected:
 public:
 	Event<>        WhenPreAction;
 
-
 	DataPusher&    SetConvert(const Convert& _convert) { convert = &_convert; Refresh(); return *this; }
 	const Convert& GetConvert() const                  { return *convert; }
 
 	DataPusher&    SetDisplay(const Display& _display) { display = &_display; Refresh(); return *this; }
 	const Display& GetDisplay() const                  { return *display; }
-
-	virtual Value  GetData() const;
-	virtual void   SetData(const Value& value);
 
 	void           SetDataAction(const Value& value);
 
