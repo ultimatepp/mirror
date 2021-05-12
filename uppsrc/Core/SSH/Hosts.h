@@ -5,9 +5,13 @@ public:
         int             type;
         int             status;
 
-        bool            IsRSA() const                   { return type == LIBSSH2_KNOWNHOST_KEY_SSHRSA;  }
-        bool            IsDSS() const                   { return type == LIBSSH2_KNOWNHOST_KEY_SSHDSS;  }
-        bool            IsUnknown() const               { return !IsRSA() && !IsDSS(); }
+        bool            IsRSA() const                   { return type == LIBSSH2_KNOWNHOST_KEY_SSHRSA;       }
+        bool            IsDSS() const                   { return type == LIBSSH2_KNOWNHOST_KEY_SSHDSS;       }
+        bool            IsECDSA256() const              { return type == LIBSSH2_KNOWNHOST_KEY_ECDSA_256;    }
+        bool            IsECDSA384() const              { return type == LIBSSH2_KNOWNHOST_KEY_ECDSA_384;    }
+        bool            IsECDSA521() const              { return type == LIBSSH2_KNOWNHOST_KEY_ECDSA_521;    }
+        bool            IsED25519() const               { return type == LIBSSH2_KNOWNHOST_KEY_ED25519;      }
+        bool            IsUnknown() const;
 
         bool            IsFailure() const               { return status == LIBSSH2_KNOWNHOST_CHECK_FAILURE;  }
         bool            IsNotFound() const              { return status == LIBSSH2_KNOWNHOST_CHECK_NOTFOUND; }
@@ -34,7 +38,7 @@ public:
 
 private:
     bool                Error();
-    void				Clear()							{ error.a = 0; error.b = Null; }
+    void                Clear()                         { error.a = 0; error.b = Null; }
 
     String              file_path;
     Tuple<int,String>   error;

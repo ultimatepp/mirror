@@ -90,11 +90,22 @@ SshHosts::Info SshHosts::Check(const String& host, int port)
 			case LIBSSH2_HOSTKEY_TYPE_DSS:
 				info.type = LIBSSH2_KNOWNHOST_KEY_SSHDSS;
 				break;
+			case LIBSSH2_HOSTKEY_TYPE_ECDSA_256:
+				info.type = LIBSSH2_KNOWNHOST_KEY_ECDSA_256;
+				break;
+			case LIBSSH2_HOSTKEY_TYPE_ECDSA_384:
+				info.type = LIBSSH2_KNOWNHOST_KEY_ECDSA_384;
+				break;
+			case LIBSSH2_HOSTKEY_TYPE_ECDSA_521:
+				info.type = LIBSSH2_KNOWNHOST_KEY_ECDSA_521;
+				break;
+			case LIBSSH2_HOSTKEY_TYPE_ED25519:
+				info.type = LIBSSH2_KNOWNHOST_KEY_ED25519;
+				break;
 			case LIBSSH2_HOSTKEY_TYPE_UNKNOWN:
+			default:
 				info.type = LIBSSH2_KNOWNHOST_KEY_UNKNOWN;
 				break;
-			default:
-				NEVER();
 		}
 	}
 	return pick(info);
@@ -143,5 +154,16 @@ SshHosts::~SshHosts()
 {
 	if(ssh_session && handle)
 		libssh2_knownhost_free(handle);
+}
+ 
+bool SshHosts::Info::IsUnknown() const
+{
+	return findarg(type,
+		LIBSSH2_KNOWNHOST_KEY_SSHRSA,
+		LIBSSH2_KNOWNHOST_KEY_SSHDSS,
+		LIBSSH2_KNOWNHOST_KEY_ECDSA_256,
+		LIBSSH2_KNOWNHOST_KEY_ECDSA_384,
+		LIBSSH2_KNOWNHOST_KEY_ECDSA_521,
+		LIBSSH2_KNOWNHOST_KEY_ED25519) < 0;
 }
 }
