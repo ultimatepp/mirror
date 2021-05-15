@@ -351,7 +351,7 @@ void Ctrl::ClearModifyDeep()
 	GuiLock __;
 	ClearModify();
 	for(Ctrl *q = firstchild; q; q = q->next)
-		q->ClearModify();
+		q->ClearModifyDeep();
 }
 
 
