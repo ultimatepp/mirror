@@ -8,10 +8,10 @@ option "U++ Core" upp;
 #ifndef _<:PACKAGE:>_<:PACKAGE:>_h
 #define _<:PACKAGE:>_<:PACKAGE:>_h
 
-#ifdef PLATFORM_POSIX
-#include <SDL2/SDL.h>
-#else
+#ifdef _WIN32
 #include <SDL.h>
+#else
+#include <SDL2/SDL.h>
 #endif
 
 <:?upp:>
@@ -20,10 +20,10 @@ option "U++ Core" upp;
 
 #endif
 @@<:PACKAGE:>.cpp
-<:?header:>#include "<:PACKAGE:>.h"<:/:>#ifdef PLATFORM_POSIX
-#include <SDL2/SDL.h>
-#else
+<:?header:>#include "<:PACKAGE:>.h"<:/:>#ifdef _WIN32
 #include <SDL.h>
+#else
+#include <SDL2/SDL.h>
 #endif<:.:>
 
 <:?upp && !header:>
