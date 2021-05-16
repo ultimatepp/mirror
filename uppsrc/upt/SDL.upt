@@ -1,0 +1,97 @@
+template "SDL project" main;
+
+option "Create header" header;
+option "U++ Core" upp;
+
+@@<:PACKAGE:>.h
+??header
+#ifndef _<:PACKAGE:>_<:PACKAGE:>_h
+#define _<:PACKAGE:>_<:PACKAGE:>_h
+
+#ifdef PLATFORM_POSIX
+#include <SDL2/SDL.h>
+#else
+#include <SDL.h>
+#endif
+
+<:?upp:>
+#include <Core/Core.h>
+<:.:>
+
+#endif
+@@<:PACKAGE:>.cpp
+<:?header:>#include "<:PACKAGE:>.h"<:/:>#ifdef PLATFORM_POSIX
+#include <SDL2/SDL.h>
+#else
+#include <SDL.h>
+#endif<:.:>
+
+<:?upp && !header:>
+#include <Core/Core.h>
+<:.:>
+
+void Paint(SDL_Renderer *r)
+{
+	unsigned char x = SDL_GetTicks() / 5;
+	
+	SDL_SetRenderDrawColor(r, x, x, x, 255);
+
+	SDL_Rect rect;
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 1024;
+	rect.h = 768;
+	SDL_RenderFillRect(r, &rect);
+}
+
+<:?upp:>CONSOLE_APP_MAIN<:/:>int main(int argc, char **argv)<:.:>
+{
+	SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK|SDL_INIT_HAPTIC);
+	
+	SDL_Window *win = SDL_CreateWindow("My Game", 0, 0, 1024, 768,
+	                                          SDL_WINDOW_SHOWN
+	                                          // |SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI
+	                                          // |SDL_WINDOW_BORDERLESS|SDL_WINDOW_FULLSCREEN_DESKTOP
+	);
+	
+	SDL_Renderer *r = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
+
+	bool done = false;
+	while(!done) {
+		SDL_Event event;
+		while(SDL_PollEvent(&event)) {
+			switch(event.type) {
+			case SDL_QUIT:
+				done = true;
+			}
+		}
+		Paint(r);
+		SDL_RenderPresent(r);
+	}
+
+	SDL_DestroyRenderer(r);
+	SDL_DestroyWindow(win);
+
+	SDL_Quit();
+
+<:?upp:><:/:>
+	return 0;
+<:.:>
+}
+@@<:PACKAGE:>.upp
+
+<:?upp:>uses Core;<:.:>
+
+library(WIN32) "SDL2.lib SDL2main.lib";
+
+library(POSIX) "SDL2 SDL2main";
+
+pkg_config
+	sdl2;
+
+file<:?header:>
+	<:PACKAGE:>.h,<:.:>
+	<:PACKAGE:>.cpp;
+
+mainconfig
+	"" = "GUI";
