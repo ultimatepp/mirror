@@ -66,4 +66,4 @@ ltimatepp/ultimatepp] `- GIT repository&]
 tps://github.com/ultimatepp/ultimatepp/commits/master] `- Latest 
 changes&]
 [s5;l160;i150;O0; [^https`:`/`/github`.com`/ultimatepp`/UppHub^ https://github.com/ultim
-atepp/UppHub] `- Registry for additional U`+`+ packages]]
+atepp/UppHub] `- Registry for additional distrubted U`+`+ packages]]

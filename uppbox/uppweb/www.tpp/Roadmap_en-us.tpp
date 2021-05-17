@@ -26,9 +26,9 @@ topic "Roadmap";
 [2 $$0,0#00000000000000000000000000000000:Default]
 [{_}%EN-US 
 [s2; Release history&]
-[s3; 2021.1 (May 2021?)&]
+[s3; 2021.1 (rev. 15947) (May 2021)&]
 [s5;po*/ &]
-[s5;po [*/ Upcoming release]&]
+[s5;po [*/ Current stable release]&]
 [s5;po &]
 [s5;po [* Release highlights]&]
 [s5;l160;i150;poO0; New system for 3rd party modules, `"UppHub`": 
@@ -101,8 +101,6 @@ of text up/down&]
 [s5; &]
 [s3; 2020.2 (rev. 15260) (October 2020)&]
 [s5; &]
-[s5;po [*/ Current stable release]&]
-[s5;po &]
 [s5;po [* Release highlights]&]
 [s5;l160;i150;poO0; This release is mostly about optimizations, using 
 SIMD and multithreading.&]
