@@ -60,6 +60,8 @@ struct CppBuilder : Builder {
 	CppBuilder() : wspc(GetIdeWorkspace()) {}
 };
 
+String SourceToObjName(const String& package, const String& srcfile_);
+
 struct GccBuilder : CppBuilder {
 	virtual void   AddFlags(Index<String>& cfg);
 	virtual bool   BuildPackage(const String& package, Vector<String>& linkfile, Vector<String>& immfile,

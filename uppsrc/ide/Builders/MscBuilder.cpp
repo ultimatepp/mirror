@@ -355,7 +355,7 @@ bool MscBuilder::BuildPackage(const String& package, Vector<String>& linkfile, V
 		bool rc = (ext == ".rc");
 		bool brc = (ext == ".brc");
 		bool init = (i >= first_ifile);
-		String objfile = CatAnyPath(outdir, GetFileTitle(fn) + (rc ? "$rc.obj" : brc ? "$brc.obj" : ".obj"));
+		String objfile = CatAnyPath(outdir, SourceToObjName(package, fn) + (rc ? "$rc.obj" : brc ? "$brc.obj" : ".obj"));
 		if(HdependFileTime(fn) > GetFileTime(objfile)) {
 			int time = msecs();
 			bool execerr = false;

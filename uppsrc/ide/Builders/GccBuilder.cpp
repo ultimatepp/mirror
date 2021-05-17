@@ -234,7 +234,7 @@ bool GccBuilder::BuildPackage(const String& package, Vector<String>& linkfile, V
 		bool rc = (ext == ".rc");
 		bool brc = (ext == ".brc");
 		bool init = (i >= first_ifile);
-		String objfile = CatAnyPath(outdir, GetFileTitle(fn) + (rc ? "$rc.o" : brc ? "$brc.o" : ".o"));
+		String objfile = CatAnyPath(outdir, SourceToObjName(package, fn)) + (rc ? "$rc.o" : brc ? "$brc.o" : ".o");
 		if(GetFileName(fn) == "Info.plist")
 			Info_plist = LoadFile(fn);
 		if(HdependFileTime(fn) > GetFileTime(objfile)) {

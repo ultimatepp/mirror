@@ -235,6 +235,55 @@ void sGatherAllExt(Vector<String>& files, Vector<String>& dirs, const String& pp
 	}
 }
 
+// gather files based on pattern -- pattern should be normalized
+// if pattern doesn't contain wildcards is taken as a file name
+static void sGatherFiles(Index<String> &files, const String &pattern)
+{
+	if(!HasWildcards(pattern))
+	{
+		if(FileExists(pattern))
+			files.FindAdd(pattern);
+		return;
+	}
+	FindFile ff(pattern);
+	while(ff)
+	{
+		if(ff.IsFile())
+			files.FindAdd(ff.GetPath());
+		ff.Next();
+	}
+	ff.Search(AppendFileName(GetFileFolder(pattern), "*.*"));
+	while(ff)
+	{
+		if(ff.IsFolder())
+			sGatherFiles(files, AppendFileName(ff.GetPath(), GetFileName(pattern)));
+		ff.Next();
+	}
+}
+
+// gather folders based on pattern -- pattern should be normalized
+// if pattern doesn't contain wildcards is taken as a folder name
+static void sGatherFolders(Index<String> &folders, const String &pattern)
+{
+	if(pattern.Find("*") < 0)
+	{
+		if(DirectoryExists(pattern))
+			folders.FindAdd(pattern);
+		return;
+	}
+	String pth = GetFileFolder(pattern);
+	String pat = GetFileName(pattern);
+	if(DirectoryExists(pth))
+		folders.FindAdd(pth);
+	FindFile ff(pattern);
+	while(ff)
+	{
+		if(ff.IsFolder())
+			sGatherFolders(folders, AppendFileName(ff.GetPath(), pat));
+		ff.Next();
+	}
+}
+
 Vector<String> ReadPatterns(CParser& p)
 {
 	Vector<String> out;
@@ -245,18 +294,32 @@ Vector<String> ReadPatterns(CParser& p)
 	return out;
 }
 
-void ExtExclude(CParser& p, Index<String>& x)
+static bool CheckImportCondition(CParser &p, Vector<String> const &flag)
 {
+	// no condition == true
+	if(!p.IsChar('('))
+		return true;
+	String s = ReadWhen(p);
+	return MatchWhen(s, flag);
+}
+
+static void ExtExclude(CParser& p, String const &packageFolder, Index<String>& x, Vector<String> const &flag)
+{
+	bool apply = CheckImportCondition(p, flag);
 	Vector<String> e = ReadPatterns(p);
-	Vector<int> remove;
-	for(int i = 0; i < x.GetCount(); i++)
-		for(int j = 0; j < e.GetCount(); j++) {
-			if(PatternMatch(e[j], x[i])) {
-				remove.Add(i);
-				break;
+	if(apply) {
+		for(int i = 0; i < e.GetCount(); i++)
+			e[i] = NormalizePath(e[i], packageFolder);
+		Vector<int> remove;
+		for(int i = 0; i < x.GetCount(); i++)
+			for(int j = 0; j < e.GetCount(); j++) {
+				if(PatternMatch(e[j], x[i])) {
+					remove.Add(i);
+					break;
+				}
 			}
-		}
-	x.Remove(remove);
+		x.Remove(remove);
+	}
 }
 
 Vector<String> CppBuilder::CustomStep(const String& pf, const String& package_, bool& error)
@@ -266,9 +329,9 @@ Vector<String> CppBuilder::CustomStep(const String& pf, const String& package_, 
 	String file = path;
 	String ext = ToLower(GetFileExt(pf));
 	if(ext == ".ext") {
-		Vector<String> files;
-		Vector<String> dirs;
-		sGatherAllExt(files, dirs, GetFileFolder(path), "");
+		Vector<String> const &flags = config.GetKeys();
+
+		String packageFolder = GetFileFolder(path);
 		
 		Index<String> pkg_files;
 		Package pkg;
@@ -283,47 +346,50 @@ Vector<String> CppBuilder::CustomStep(const String& pf, const String& package_, 
 			CParser p(f);
 			while(!p.IsEof()) {
 				if(p.Id("files")) {
+					bool apply = CheckImportCondition(p, flags);
 					Vector<String> e = ReadPatterns(p);
-					for(int i = 0; i < files.GetCount(); i++)
-						for(int j = 0; j < e.GetCount(); j++) {
+					if(apply) {
+						Index<String> files;
+						for(int iPat = 0; iPat < e.GetCount(); iPat++)
+							sGatherFiles(files, NormalizePath(e[iPat], packageFolder));
+						for(int i = 0; i < files.GetCount(); i++)
+						{
 							String f = files[i];
-							if(PatternMatch(e[j], f) && pkg_files.Find(f) < 0)
+							if(pkg_files.Find(f) < 0)
 								out.FindAdd(f);
 						}
-				}
-				else
-				if(p.Id("exclude")) {
-					ExtExclude(p, out);
-				}
-				else
-				if(p.Id("include_path")) {
-					Vector<String> e = ReadPatterns(p);
-					for(int j = 0; j < e.GetCount(); j++) {
-						String ee = e[j];
-						if(ee.Find('*') >= 0)
-							for(int i = 0; i < dirs.GetCount(); i++) {
-								String d = dirs[i];
-								if(PatternMatch(e[j], d)) {
-									include_path.FindAdd(d);
-								}
-							}
-						else
-							include_path.Add(ee);
 					}
 				}
-				else
+				if(p.Id("exclude")) {
+					ExtExclude(p, packageFolder, out, flags);
+				}
+				if(p.Id("include_path")) {
+					bool apply = CheckImportCondition(p, flags);
+					Vector<String> e = ReadPatterns(p);
+					if(apply) {
+						Index<String> dirs;
+						for(int iPat = 0; iPat < e.GetCount(); iPat++)
+							sGatherFolders(dirs, NormalizePath(e[iPat], packageFolder));
+						for(int i = 0; i < dirs.GetCount(); i++) {
+							String d = dirs[i];
+							include_path.FindAdd(d);
+						}
+					}
+				}
 				if(p.Id("exclude_path")) {
-					ExtExclude(p, include_path);
+					ExtExclude(p, packageFolder, include_path, flags);
 				}
 				else {
 					p.PassId("includes");
+					bool apply = CheckImportCondition(p, flags);
 					Vector<String> e = ReadPatterns(p);
-					for(int i = 0; i < files.GetCount(); i++)
-						for(int j = 0; j < e.GetCount(); j++) {
-							String f = files[i];
-							if(PatternMatch(e[j], f) && pkg_files.Find(f) < 0)
-								include_path.FindAdd(GetFileFolder(f));
-						}
+					if(apply) {
+						Index<String> files;
+						for(int iPat = 0; iPat < e.GetCount(); iPat++)
+							sGatherFiles(files, NormalizePath(e[iPat], packageFolder));
+						for(int i = 0; i < files.GetCount(); i++)
+							include_path.FindAdd(GetFileFolder(files[i]));
+					}
 				}
 			}
 		}
@@ -334,7 +400,7 @@ Vector<String> CppBuilder::CustomStep(const String& pf, const String& package_, 
 		}
 		
 		for(int i = 0; i < include_path.GetCount(); i++)
-			include.Add(NormalizePath(include_path[i], GetFileFolder(path)));
+			include.Add(include_path[i]);
 		
 		Vector<String> o;
 		for(int i = 0; i < out.GetCount(); i++)
@@ -491,4 +557,17 @@ String CppBuilder::IncludesDefinesTargetTime(const String& package, const Packag
 bool CppBuilder::HasAnyDebug() const
 {
 	return HasFlag("DEBUG") || HasFlag("DEBUG_MINIMAL") || HasFlag("DEBUG_FULL");
+}
+
+String SourceToObjName(const String& package, const String& srcfile_)
+{
+	String srcfile = srcfile_;
+	srcfile.TrimEnd(".cpp");
+	int q = GetFileFolder(PackagePath(package)).GetCount() + 1;
+	if(q >= srcfile.GetCount())
+		return GetFileTitle(srcfile);
+	String r;
+	for(const char *s = ~srcfile + q; *s; s++)
+		r.Cat(findarg(*s, '/', '\\') >= 0 ? '_' : *s);
+	return r;
 }
