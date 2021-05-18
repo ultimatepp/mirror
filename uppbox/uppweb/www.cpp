@@ -880,7 +880,7 @@ CONSOLE_APP_MAIN
 	if (outHtml)
 		SaveFile(AppendFileName(targetdir, "sdj.gif"), LoadFile(GetRcFile("sdj.gif")));
 	
-	String release = "15260";
+	String release = "15947";
 	escape.Add("RELEASE", release);
 	escape.Add("RELEASET", release);
 	escape.Add("UPDATETIME", Format("%`", GetUtcTime()));
