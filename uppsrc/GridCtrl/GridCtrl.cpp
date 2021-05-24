@@ -781,7 +781,7 @@ void GridCtrl::Paste(int mode)
 {
 	if(!clipboard)
 		return;
-
+	
 	GridClipboard gc = GetClipboard();
 
 	bool is_gc = !gc.data.IsEmpty();
@@ -802,8 +802,12 @@ void GridCtrl::Paste(int mode)
 
 	Vector<String> lines;
 
+	String s = FromUnicode(ReadClipboardUnicodeText());
+
+	WhenPasting(s);
+
 	if(is_tc && !is_gc)
-		lines = Upp::Split(FromUnicode(ReadClipboardUnicodeText()), '\n');
+		lines = Upp::Split(s, '\n');
 
 	if(mode == 1)
 	{

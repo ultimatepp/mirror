@@ -93,7 +93,6 @@ void TopWindow::Close()
 		DefaultBreak();
 		return;
 	}
-	backup.Clear();
 	if(IsOpen()) IgnoreMouseUp();
 	Ctrl::Close();
 }

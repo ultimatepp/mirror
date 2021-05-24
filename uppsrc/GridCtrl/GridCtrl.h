@@ -1853,7 +1853,9 @@ class GridCtrl : public Ctrl
 		Event<Value&> ProcessSummaryValue;
 
 		Event<int, int, Value&> WhenPasteCell;
-		Event<> WhenPaste;
+		
+		Event<String&> WhenPasting;
+		Event<>        WhenPaste;
 };
 
 class GridText : Ctrl
