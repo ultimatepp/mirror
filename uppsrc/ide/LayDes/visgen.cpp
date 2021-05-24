@@ -42,6 +42,7 @@ void VisGenDlg::Refresh()
 {
 	String s;
 	int q = ~type;
+	parent_ctrl.Enable(q < 3);
 	bool b = q >= 3 && q <= 4;
 	pars.Enable(b);
 	brackets.Enable(b);
@@ -99,9 +100,11 @@ void VisGenDlg::Refresh()
 		if(b1.GetCount())
 			b1 << "\n";
 	}
+	
+	String base = parent_ctrl ? "ParentCtrl" : "TopWindow";
 
 	if(q == 0) {
-		s << "class " << n << " : public With" << layout.name << "<TopWindow> {\n"
+		s << "class " << n << " : public With" << layout.name << "<" << base << "> {\n"
 		  << b1
 		  << "public:\n"
 		  << "\t" << n << "();\n"
@@ -116,7 +119,7 @@ void VisGenDlg::Refresh()
 	}
 	else
 	if(q == 1) {
-		s << "struct " << n << " : With" << layout.name << "<TopWindow> {\n"
+		s << "struct " << n << " : With" << layout.name << "<" << base << "> {\n"
 		  << b1
 		  << "\t" << n << "();\n"
 		  << "};\n"
@@ -133,7 +136,7 @@ void VisGenDlg::Refresh()
 		String n = ~name;
 		if(IsNull(n))
 			n = "dlg";
-		s << "\tWith" << layout.name << "<TopWindow> " << n << ";\n"
+		s << "\tWith" << layout.name << "<" << base << "> " << n << ";\n"
 		  << oce << '(' << n << ", \"\");\n";
 		if(ok)
 			s << "\tif(" << n << ".Execute() != IDOK)\n\t\treturn;\n";
