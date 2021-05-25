@@ -709,8 +709,8 @@ void Ide::EditAsText()
 	String path = editfile;
 	if(editastext.Find(path) >= 0)
 		return;
-	if(!FileExists(path))
-		return;
+//	if(!FileExists(path))
+//		return;
 	DoEditAsText(path);
 	byte cs = editor.GetCharset();
 	int sc = editor.GetSpellcheckComments();
