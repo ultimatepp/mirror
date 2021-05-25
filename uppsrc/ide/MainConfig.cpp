@@ -103,7 +103,7 @@ MainConfigDlg::MainConfigDlg(const Workspace& wspc_) : wspc(wspc_) {
 	cb <<= THISBACK(FlagDlg);
 	list.AddColumn("Flags", 3).Edit(fe);
 	list.AddColumn("Optional name", 2).Edit(ce);
-	list.Appending().Removing().Moving();
+	list.Appending().Removing().Moving().Duplicating();
 	
 	list.WhenDrag = [=] {
 		list.DoDragAndDrop(InternalClip(list, "main_config-item"), list.GetDragSample(), DND_MOVE);
@@ -158,4 +158,3 @@ void Ide::MainConfig() {
 	SetHdependDirs();
 	MakeTitle();
 }
-
