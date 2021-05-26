@@ -381,7 +381,7 @@ struct Parser : ParserContext {
 	void   Check(bool b, const char *err);
 	void   CheckKey(int c);
 
-	void   ClassEnum();
+	void   ClassEnum(const String& clss);
 	bool   IsEnum(int i);
 	bool   UsingNamespace();
 	void   SetScopeCurrent();

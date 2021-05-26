@@ -1505,7 +1505,7 @@ bool Parser::IsEnum(int i)
 	}
 }
 
-void Parser::ClassEnum()
+void Parser::ClassEnum(const String& clss)
 {
 	context.typenames.FindAdd(lex);
 	Context cc;
@@ -1519,6 +1519,7 @@ void Parser::ClassEnum()
 	LLOG("enum class "  << context.scope << " using " << context.namespace_using);
 	CppItem& im = Item(context.scope, context.namespace_using, key, name, lex != ';');
 	im.kind = STRUCT;
+	im.natural = clss + " enum " + name;
 	im.type = name;
 	im.access = cc.access;
 	im.tname.Clear();
@@ -1636,7 +1637,13 @@ void Parser::Do()
 	if(lex == tk_enum && lex[1] == tk_class && IsEnum(2)) {
 		++lex;
 		++lex;
-		ClassEnum(); // like enum class Foo { A, B }
+		ClassEnum("class"); // like enum class Foo { A, B }
+	}
+	else
+	if(lex == tk_enum && lex[1] == tk_struct && IsEnum(2)) {
+		++lex;
+		++lex;
+		ClassEnum("struct"); // like enum struct Foo { A, B }
 	}
 	else
 	if(lex == tk_typedef && lex[1] == tk_enum && IsEnum(2)) {
