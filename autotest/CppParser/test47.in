@@ -1,0 +1,9 @@
+enum class Foo : int { XX };
+
+enum class Foo8 : int8a { XX8 };
+
+enum struct Bar { BAR };
+
+enum { A, B, C };
+
+enum : int { AA };

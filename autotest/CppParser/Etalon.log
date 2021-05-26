@@ -1,4 +1,4 @@
-* /home/cxl/.cache/upp.out/autotest/CLANG.Debug.Debug_Full.Shared/CppParser 02.09.2020 12:56:20, user: cxl
+* C:\upp\out\autotest\MSBT19.Debug.Debug_Full\CppParser.exe 26.05.2021 09:43:08, user: cxl
 
 **** test0.in
 ====
@@ -645,12 +645,12 @@ p Point, line: 9
 	ENUM, name: EEbig, qitem: EEbig, qtype: , qptype: , natural: enum EE EEbig = 0xFFFFFFF0U , line 5, using 
 }
 ClassFoo {
-	STRUCT, name: ClassFoo, qitem: class, qtype: ClassFoo, qptype: , natural: , line 7, using 
+	STRUCT, name: ClassFoo, qitem: class, qtype: ClassFoo, qptype: , natural: class enum ClassFoo, line 7, using 
 	ENUM, name: ClONE, qitem: ClONE, qtype: , qptype: , natural: enum ClONE, line 7, using 
 	ENUM, name: ClBTWO, qitem: ClBTWO, qtype: , qptype: , natural: enum ClBTWO, line 7, using 
 }
 Cl3Foo {
-	STRUCT, name: Cl3Foo, qitem: class, qtype: Cl3Foo, qptype: , natural: , line 9, using 
+	STRUCT, name: Cl3Foo, qitem: class, qtype: Cl3Foo, qptype: , natural: class enum Cl3Foo, line 9, using 
 	ENUM, name: C3ONE, qitem: C3ONE, qtype: , qptype: , natural: enum C3ONE, line 9, using 
 	ENUM, name: C3TWO, qitem: C3TWO, qtype: , qptype: , natural: enum C3TWO, line 9, using 
 }
@@ -871,6 +871,29 @@ b FooBar, line: 7
 <globals> {
 	VARIABLE, name: test1, qitem: test1, qtype: Vector<Vector<int>>, qptype: , natural: Vector<Vector<int> > test1, line 1, using 
 	VARIABLE, name: test2, qitem: test2, qtype: Vector<Vector<int>>, qptype: , natural: Vector<Vector<int>> test2, line 2, using 
+}
+<locals> {
+}
+-------------------------------------------------------------------------------
+**** test47.in
+====
+Foo {
+	STRUCT, name: Foo, qitem: class, qtype: Foo, qptype: , natural: class enum Foo, line 1, using 
+	ENUM, name: XX, qitem: XX, qtype: , qptype: , natural: enum XX, line 1, using 
+}
+Foo8 {
+	STRUCT, name: Foo8, qitem: class, qtype: Foo8, qptype: , natural: class enum Foo8, line 3, using 
+	ENUM, name: XX8, qitem: XX8, qtype: , qptype: , natural: enum XX8, line 3, using 
+}
+Bar {
+	STRUCT, name: Bar, qitem: class, qtype: Bar, qptype: , natural: struct enum Bar, line 5, using 
+	ENUM, name: BAR, qitem: BAR, qtype: , qptype: , natural: enum BAR, line 5, using 
+}
+<globals> {
+	ENUM, name: A, qitem: A, qtype: , qptype: , natural: enum A, line 7, using 
+	ENUM, name: B, qitem: B, qtype: , qptype: , natural: enum B, line 7, using 
+	ENUM, name: C, qitem: C, qtype: , qptype: , natural: enum C, line 7, using 
+	ENUM, name: AA, qitem: AA, qtype: , qptype: , natural: enum AA, line 9, using 
 }
 <locals> {
 }

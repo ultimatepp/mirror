@@ -51,7 +51,8 @@ file
 	test43.in,
 	test44.in,
 	test45.in,
-	test46.in;
+	test46.in,
+	test47.in;
 
 mainconfig
 	"" = "";
