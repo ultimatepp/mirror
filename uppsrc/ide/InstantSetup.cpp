@@ -158,7 +158,7 @@ void InstantSetup()
 			bmSet(bm, "DEBUG_OPTIONS", "");
 			bmSet(bm, "DEBUG_FLAGS", "");
 			bmSet(bm, "DEBUG_LINK", "-Wl,--stack,20000000");
-			bmSet(bm, "RELEASE_BLITZ", "");
+			bmSet(bm, "RELEASE_BLITZ", "1");
 			bmSet(bm, "RELEASE_LINKMODE", "0");
 			bmSet(bm, "RELEASE_OPTIONS", "-O3 ");
 			bmSet(bm, "RELEASE_FLAGS", "");
@@ -404,7 +404,7 @@ void InstantSetup()
 			bmSet(bm, "DEBUG_OPTIONS", "-O0");
 			bmSet(bm, "DEBUG_FLAGS", "");
 			bmSet(bm, "DEBUG_LINK", "-Wl,--stack,20000000");
-			bmSet(bm, "RELEASE_BLITZ", "");
+			bmSet(bm, "RELEASE_BLITZ", "1");
 			bmSet(bm, "RELEASE_LINKMODE", "0");
 			bmSet(bm, "RELEASE_OPTIONS", "-O2 -ffunction-sections");
 			bmSet(bm, "RELEASE_FLAGS", "");
