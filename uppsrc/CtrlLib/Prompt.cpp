@@ -201,7 +201,7 @@ int Prompt(bool dontshowagain, const char *dsa_id_, int beep,
 	LeaveGuiMutex();
 	int result;
 	Ctrl::Call(callback2(sExecutePrompt, &dlg, &result));
-	if(dontshowagain && dsa)
+	if(dontshowagain && dsa && result > 0)
 		dsa_history.Add(dsa_id, result);
 	return result;
 }
