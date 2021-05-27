@@ -94,6 +94,12 @@ void LayDes::FindLayout(const String& name, const String& item_name)
 		}
 }
 
+String LayDes::GetLayoutName() const
+{
+	return currentlayout >= 0 && currentlayout < layout.GetCount() ? layout[currentlayout].name
+	                                                               : String();
+}
+
 bool LayDes::Load(const char *file, byte _charset)
 {
 	charset = _charset;

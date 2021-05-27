@@ -711,11 +711,22 @@ void Ide::EditAsText()
 		return;
 //	if(!FileExists(path))
 //		return;
+	String layout;
+	if(auto *l = dynamic_cast<LayDesigner *>(~designer))
+		layout = l->GetCurrentLayout();
 	DoEditAsText(path);
 	byte cs = editor.GetCharset();
 	int sc = editor.GetSpellcheckComments();
 	FlushFile();
 	EditFile0(path, cs, sc);
+	if(layout.GetCount()) {
+		layout = "LAYOUT(" + layout + ",";
+		for(int i = 0; i < editor.GetLineCount(); i++)
+			if(editor.GetUtf8Line(i).StartsWith(layout)) {
+				editor.GotoLine(i);
+				break;
+			}
+	}
 }
 
 void Ide::EditUsingDesigner()
