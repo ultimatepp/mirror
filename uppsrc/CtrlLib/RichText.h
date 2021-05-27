@@ -128,6 +128,12 @@ public:
 	RichTextCtrl();
 };
 
+int Prompt(bool dontshowagain, const char *opt_id,
+           Event<const String&> WhenLink, int beep,
+           const char *title, const Image& iconbmp, const char *qtf, bool okcancel,
+           const char *button1, const char *button2, const char *button3,
+		   int cx,
+		   Image im1, Image im2, Image im3);
 
 int Prompt(Event<const String&> WhenLink,
            const char *title, const Image& iconbmp, const char *qtf, bool okcancel,
@@ -146,10 +152,29 @@ int Prompt(const char *title, const Image& icon, const char *qtf,
            const char *button1, const char *button2 = NULL, const char *button3 = NULL,
 		   int cx = 0);
 
+enum { BEEP_NONE, BEEP_INFORMATION, BEEP_EXCLAMATION, BEEP_QUESTION, BEEP_ERROR };
+
+int PromptOpt(const char *opt_id, int beep, Event<const String&> WhenLink,
+              const char *title, const Image& icon, const char *qtf, bool okcancel,
+              const char *button1, const char *button2, const char *button3,
+		      int cx, Image im1, Image im2, Image im3);
+
+int PromptOpt(const char *opt_id, int beep,
+              const char *title, const Image& icon, const char *qtf, bool okcancel,
+              const char *button1, const char *button2 = NULL, const char *button3 = NULL,
+		      int cx = 0);
+
+int PromptOpt(const char *opt_id, int beep,
+              const char *title, const Image& icon, const char *qtf,
+              const char *button1, const char *button2 = NULL, const char *button3 = NULL,
+		      int cx = 0);
+
 void PromptOK(const char *qtf);
 int  PromptOKCancel(const char *qtf);
+int  PromptOKCancelAll(const char *qtf);
 int  PromptYesNo(const char *qtf);
 int  PromptYesNoCancel(const char *qtf);
+int  PromptYesNoAll(const char *qtf);
 int  PromptRetryCancel(const char *qtf);
 int  PromptAbortRetry(const char *qtf);
 int  PromptAbortRetryIgnore(const char *qtf);
@@ -161,9 +186,32 @@ void ErrorOK(const char *qtf);
 int  ErrorOKCancel(const char *qtf);
 int  ErrorYesNo(const char *qtf);
 int  ErrorYesNoCancel(const char *qtf);
+int  ErrorYesNoAll(const char *qtf);
 int  ErrorRetryCancel(const char *qtf);
 int  ErrorAbortRetry(const char *qtf);
 int  ErrorAbortRetryIgnore(const char *qtf);
+
+void PromptOKOpt(const char *qtf, const char *opt_id = NULL);
+int  PromptOKCancelOpt(const char *qtf, const char *opt_id = NULL);
+int  PromptOKCancelAllOpt(const char *qtf, const char *opt_id = NULL);
+int  PromptYesNoOpt(const char *qtf, const char *opt_id = NULL);
+int  PromptYesNoCancelOpt(const char *qtf, const char *opt_id = NULL);
+int  PromptYesNoAllOpt(const char *qtf, const char *opt_id = NULL);
+int  PromptRetryCancelOpt(const char *qtf, const char *opt_id = NULL);
+int  PromptAbortRetryOpt(const char *qtf, const char *opt_id = NULL);
+int  PromptAbortRetryIgnoreOpt(const char *qtf, const char *opt_id = NULL);
+int  PromptSaveDontSaveCancelOpt(const char *qtf, const char *opt_id = NULL);
+
+void ExclamationOpt(const char *qtf, const char *opt_id = NULL);
+
+void ErrorOKOpt(const char *qtf, const char *opt_id = NULL);
+int  ErrorOKCancelOpt(const char *qtf, const char *opt_id = NULL);
+int  ErrorYesNoOpt(const char *qtf, const char *opt_id = NULL);
+int  ErrorYesNoCancelOpt(const char *qtf, const char *opt_id = NULL);
+int  ErrorYesNoAllOpt(const char *qtf, const char *opt_id = NULL);
+int  ErrorRetryCancelOpt(const char *qtf, const char *opt_id = NULL);
+int  ErrorAbortRetryOpt(const char *qtf, const char *opt_id = NULL);
+int  ErrorAbortRetryIgnoreOpt(const char *qtf, const char *opt_id = NULL);
 
 Image YesButtonImage();
 Image NoButtonImage();
@@ -175,6 +223,9 @@ void NoButtonImage_Write(Image m);
 void AbortButtonImage_Write(Image m);
 void RetryButtonImage_Write(Image m);
 
+void ClearPromptOptHistory();
+void ClearPromptOptHistory(Gate<String> filter);
+void SerializePromptOptHistory(Stream& s);
 
 typedef
 int (*RedirectPromptFn)(Event<const String&> WhenLink,
@@ -185,6 +236,7 @@ int (*RedirectPromptFn)(Event<const String&> WhenLink,
 void RedirectPrompts(RedirectPromptFn r);
 
 void ShowExc(const Exc& exc);
+void ShowExcOpt(const Exc& exc, const char *opt_id);
 
 class HelpWindow : public TopWindow {
 public:
