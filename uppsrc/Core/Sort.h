@@ -109,13 +109,13 @@ void Sort__(I l, I h, const Less& less)
 		case 6: OrderIter6__(l, l + 1, l + 2, l + 3, l + 4, l + 5, less); return;
 		case 7: OrderIter7__(l, l + 1, l + 2, l + 3, l + 4, l + 5, l + 6, less); return;
 		}
-		if(count > 1000) {
+		if(count > 1000) { // median of 5, 2 of them random elements
 			middle = l + (count >> 1); // iterators cannot point to the same object!
 			I q = l + 1 + (int)Random((count >> 1) - 2);
 			I w = middle + 1 + (int)Random((count >> 1) - 2);
 			OrderIter5__(l, q, middle, w, h - 1, less);
 		}
-		else
+		else // median of 3
 			OrderIter3__(l, middle, h - 1, less);
 
 		I pivot = h - 2;
