@@ -561,7 +561,7 @@ bool TcpSocket::WouldBlock()
 
 int TcpSocket::RawSend(const void *buf, int amount)
 {
-#ifdef PLATFORM_POSIX
+#ifdef PLATFORM_LINUX
 	int res = send(socket, (const char *)buf, amount, MSG_NOSIGNAL);
 #else
 	int res = send(socket, (const char *)buf, amount, 0);
