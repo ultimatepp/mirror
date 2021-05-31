@@ -128,7 +128,7 @@ public:
 	RichTextCtrl();
 };
 
-int Prompt(bool dontshowagain, const char *opt_id,
+int Prompt(int dontshowagain, const char *opt_id,
            Event<const String&> WhenLink, int beep,
            const char *title, const Image& iconbmp, const char *qtf, bool okcancel,
            const char *button1, const char *button2, const char *button3,
@@ -169,6 +169,21 @@ int PromptOpt(const char *opt_id, int beep,
               const char *button1, const char *button2 = NULL, const char *button3 = NULL,
 		      int cx = 0);
 
+int PromptOpt1(const char *opt_id, int beep, Event<const String&> WhenLink,
+               const char *title, const Image& icon, const char *qtf, bool okcancel,
+               const char *button1, const char *button2, const char *button3,
+		       int cx, Image im1, Image im2, Image im3);
+
+int PromptOpt1(const char *opt_id, int beep,
+               const char *title, const Image& icon, const char *qtf, bool okcancel,
+               const char *button1, const char *button2 = NULL, const char *button3 = NULL,
+		       int cx = 0);
+
+int PromptOpt1(const char *opt_id, int beep,
+               const char *title, const Image& icon, const char *qtf,
+               const char *button1, const char *button2 = NULL, const char *button3 = NULL,
+		       int cx = 0);
+
 void PromptOK(const char *qtf);
 int  PromptOKCancel(const char *qtf);
 int  PromptOKCancelAll(const char *qtf);
@@ -179,6 +194,7 @@ int  PromptRetryCancel(const char *qtf);
 int  PromptAbortRetry(const char *qtf);
 int  PromptAbortRetryIgnore(const char *qtf);
 int  PromptSaveDontSaveCancel(const char *qtf);
+void ShowExc(const Exc& exc);
 
 void Exclamation(const char *qtf);
 
@@ -212,6 +228,30 @@ int  ErrorYesNoAllOpt(const char *qtf, const char *opt_id = NULL);
 int  ErrorRetryCancelOpt(const char *qtf, const char *opt_id = NULL);
 int  ErrorAbortRetryOpt(const char *qtf, const char *opt_id = NULL);
 int  ErrorAbortRetryIgnoreOpt(const char *qtf, const char *opt_id = NULL);
+void ShowExcOpt(const Exc& exc, const char *opt_id);
+
+void PromptOKOpt1(const char *qtf, const char *opt_id = NULL);
+int  PromptOKCancelOpt1(const char *qtf, const char *opt_id = NULL);
+int  PromptOKCancelAllOpt1(const char *qtf, const char *opt_id = NULL);
+int  PromptYesNoOpt1(const char *qtf, const char *opt_id = NULL);
+int  PromptYesNoCancelOpt1(const char *qtf, const char *opt_id = NULL);
+int  PromptYesNoAllOpt1(const char *qtf, const char *opt_id = NULL);
+int  PromptRetryCancelOpt1(const char *qtf, const char *opt_id = NULL);
+int  PromptAbortRetryOpt1(const char *qtf, const char *opt_id = NULL);
+int  PromptAbortRetryIgnoreOpt1(const char *qtf, const char *opt_id = NULL);
+int  PromptSaveDontSaveCancelOpt1(const char *qtf, const char *opt_id = NULL);
+
+void ExclamationOpt1(const char *qtf, const char *opt_id = NULL);
+
+void ErrorOKOpt1(const char *qtf, const char *opt_id = NULL);
+int  ErrorOKCancelOpt1(const char *qtf, const char *opt_id = NULL);
+int  ErrorYesNoOpt1(const char *qtf, const char *opt_id = NULL);
+int  ErrorYesNoCancelOpt1(const char *qtf, const char *opt_id = NULL);
+int  ErrorYesNoAllOpt1(const char *qtf, const char *opt_id = NULL);
+int  ErrorRetryCancelOpt1(const char *qtf, const char *opt_id = NULL);
+int  ErrorAbortRetryOpt1(const char *qtf, const char *opt_id = NULL);
+int  ErrorAbortRetryIgnoreOpt1(const char *qtf, const char *opt_id = NULL);
+void ShowExcOpt1(const Exc& exc, const char *opt_id);
 
 Image YesButtonImage();
 Image NoButtonImage();
@@ -234,9 +274,6 @@ int (*RedirectPromptFn)(Event<const String&> WhenLink,
                         int cx, Image im1, Image im2, Image im3);
 
 void RedirectPrompts(RedirectPromptFn r);
-
-void ShowExc(const Exc& exc);
-void ShowExcOpt(const Exc& exc, const char *opt_id);
 
 class HelpWindow : public TopWindow {
 public:

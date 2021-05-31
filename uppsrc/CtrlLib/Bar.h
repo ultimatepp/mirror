@@ -605,9 +605,10 @@ public:
 	void        NewEntry(const String& path);
 	void        RemoveEntry(const String& path);
 
+	int         GetCount() const                        { return lru.GetCount(); }
+
 	LRUList&    Limit(int _limit)                       { limit = _limit; return *this; }
 	int         GetLimit() const                        { return limit; }
-	int         GetCount() const                        { return lru.GetCount(); }
 
 	typedef LRUList CLASSNAME;
 

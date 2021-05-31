@@ -545,6 +545,8 @@ public:
 	ArrayMap<String, FileData> filedata;
 	Index<String> editastext;
 	Index<String> editashex;
+	
+	Vector<String> difflru;
 
 	DropList   mainconfiglist;
 	String     mainconfigname;

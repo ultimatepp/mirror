@@ -497,18 +497,26 @@ void Ide::FilePropertiesMenu(Bar& menu)
 	menu.Add(IsActiveFile() && !designer, AK_SAVEENCODING, THISBACK(ChangeCharset))
 	    .Help("Convert actual file to different encoding");
 	bool candiff = IsActiveFile() && !editfile_isfolder && !designer;
-	menu.AddMenu(candiff, AK_DIFF, IdeImg::Diff(), THISBACK(Diff))
-	    .Help("Show differences between the current and arbitrary files");
 	String path;
 	int i = filelist.GetCursor() + 1;
 	if(i >= 0 && i < fileindex.GetCount() && fileindex[i] < actual.file.GetCount())
 		path = SourcePath(actualpackage, actual.file[fileindex[i]]);
-	menu.AddMenu(candiff && FileExists(path), "Compare with " + Nvl(GetFileName(path), "next file"),
-	             IdeImg::DiffNext(), [=] { DiffWith(path); })
-	    .Help("Show differences between the current and the next file");
-	menu.AddMenu(candiff && FileExists(GetTargetLogPath()),
-	             AK_DIFFLOG, IdeImg::DiffLog(), [=] { DiffWith(GetTargetLogPath()); })
-	    .Help("Show differences between the current and the log");
+	menu.Sub(candiff, "Compare with", [=](Bar& bar) {
+		bar.AddMenu(candiff, AK_DIFF, IdeImg::Diff(), THISBACK(Diff))
+		    .Help("Show differences between the current and selected file");
+		bar.AddMenu(candiff && FileExists(GetTargetLogPath()),
+		            AK_DIFFLOG, IdeImg::DiffLog(), [=] { DiffWith(GetTargetLogPath()); })
+		    .Help("Show differences between the current file and the log");
+		if(FileExists(path))
+			bar.AddMenu(candiff && FileExists(path), path,
+			            IdeImg::DiffNext(), [=] { DiffWith(path); })
+			    .Help("Show differences between the current and the next file");
+		for(String p : difflru)
+			if(p != path)
+				bar.AddMenu(candiff && FileExists(p), p,
+				            IdeImg::DiffNext(), [=] { DiffWith(p); })
+				    .Help("Show differences between the current and that file");
+	});
 	if(editfile_repo) {
 		String txt = String("Show ") + (editfile_repo == SVN_DIR ? "svn" : "git") + " history of ";
 		menu.AddMenu(candiff, AK_SVNDIFF, IdeImg::SvnDiff(), [=] {

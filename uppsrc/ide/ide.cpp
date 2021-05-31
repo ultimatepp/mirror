@@ -714,6 +714,9 @@ void Ide::Diff()
 	diffdlg.diff.WhenLeftLine = THISBACK1(GotoDiffLeft, &diffdlg);
 	diffdlg.diff.WhenRightLine = THISBACK1(GotoDiffRight, &diffdlg);
 	diffdlg.Execute(editfile);
+	String s = diffdlg.GetExtPath();
+	if(FileExists(s))
+		LruAdd(difflru, s);
 }
 
 void Ide::DiffWith(const String& path)

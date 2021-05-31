@@ -74,7 +74,7 @@ void SerializePromptOptHistory(Stream& s)
 	s % dsa_history;
 }
 
-int Prompt(bool dontshowagain, const char *dsa_id_, int beep,
+int Prompt(int dontshowagain, const char *dsa_id_, int beep,
            Event<const String&> WhenLink,
            const char *title, const Image& iconbmp, const char *qtf, bool okcancel,
            const char *button1, const char *button2, const char *button3,
@@ -86,7 +86,6 @@ int Prompt(bool dontshowagain, const char *dsa_id_, int beep,
                                  button1, button2, button3,
                                  cx, im1, im2, im3);
 	String dsa_id;
-	Option dsa;
 	if(dontshowagain) {
 		dsa_id = dsa_id_;
 		if(IsNull(dsa_id)) {
@@ -101,7 +100,6 @@ int Prompt(bool dontshowagain, const char *dsa_id_, int beep,
 		int q = dsa_history.Find(dsa_id);
 		if(q >= 0)
 			return dsa_history[q];
-		dsa.SetLabel(t_("Do not show this again"));
 	}
 	switch(beep) {
 	case BEEP_INFORMATION:
@@ -122,6 +120,8 @@ int Prompt(bool dontshowagain, const char *dsa_id_, int beep,
 	PromptDlgWnd__ dlg;
 	RichTextCtrl qtfctrl;
 	Icon         icon;
+	Option       dsa;
+	dsa.SetLabel(t_("Do not show this again"));
 	qtfctrl.WhenLink = WhenLink;
 	icon.SetImage(iconbmp);
 	Button b1, b2, b3;
@@ -201,7 +201,7 @@ int Prompt(bool dontshowagain, const char *dsa_id_, int beep,
 	LeaveGuiMutex();
 	int result;
 	Ctrl::Call(callback2(sExecutePrompt, &dlg, &result));
-	if(dontshowagain && dsa && result > 0)
+	if(dontshowagain && dsa && (dontshowagain > 0 || result > 0))
 		dsa_history.Add(dsa_id, result);
 	return result;
 }
@@ -512,6 +512,150 @@ int ErrorAbortRetryIgnoreOpt(const char *qtf, const char *opt_id) {
 
 int PromptSaveDontSaveCancelOpt(const char *qtf, const char *opt_id) {
 	return PromptOpt(opt_id, BEEP_QUESTION, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::question(), qtf, true,
+	              t_("&Save"), t_("&Don't Save"), t_("Cancel"), 0,
+	              CtrlImg::save(), NoButtonImage(), Null);
+}
+
+int PromptOpt1(const char *opt_id, int beep, Event<const String&> WhenLink,
+              const char *title, const Image& icon, const char *qtf, bool okcancel,
+              const char *button1, const char *button2, const char *button3,
+		      int cx, Image im1, Image im2, Image im3)
+{
+	return Prompt(-1, opt_id, beep, WhenLink, title, icon, qtf, okcancel, button1, button2, button3, cx, im1, im2, im3);
+}
+
+int PromptOpt1(const char *opt_id, int beep,
+              const char *title, const Image& icon, const char *qtf, bool okcancel,
+              const char *button1, const char *button2, const char *button3,
+		      int cx)
+{
+	return PromptOpt1(opt_id, beep, callback(LaunchWebBrowser), title,
+	              icon, qtf, okcancel, button1, button2, button3, cx, Null, Null, Null);
+}
+
+int PromptOpt1(const char *opt_id, int beep,
+              const char *title, const Image& icon, const char *qtf,
+              const char *button1, const char *button2, const char *button3,
+		      int cx)
+{
+	return PromptOpt1(opt_id, beep, title, icon, qtf, true, button1, button2, button3, cx);
+}
+
+void PromptOKOpt1(const char *qtf, const char *opt_id) {
+	PromptOpt1(opt_id, BEEP_INFORMATION, Ctrl::GetAppName(), CtrlImg::information(), qtf, t_("OK"));
+}
+
+void ExclamationOpt1(const char *qtf, const char *opt_id) {
+	PromptOpt1(opt_id, BEEP_EXCLAMATION,  Ctrl::GetAppName(), CtrlImg::exclamation(), qtf, t_("OK"));
+}
+
+void ShowExcOpt1(const Exc& exc, const char *opt_id) {
+	PromptOpt1(opt_id, BEEP_EXCLAMATION, Ctrl::GetAppName(), CtrlImg::exclamation(), DeQtf(exc), t_("OK"));
+}
+
+void ErrorOKOpt1(const char *qtf, const char *opt_id) {
+	PromptOpt1(opt_id, BEEP_ERROR, Ctrl::GetAppName(), CtrlImg::error(), qtf, t_("OK"));
+}
+
+int PromptOKCancelOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_QUESTION, Ctrl::GetAppName(), CtrlImg::question(), qtf, t_("OK"), t_("Cancel"));
+}
+
+int PromptOKCancelAllOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_QUESTION, Ctrl::GetAppName(), CtrlImg::question(), qtf, t_("OK"), t_("Cancel"), t_("All"));
+}
+
+int ErrorOKCancelOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_ERROR, Ctrl::GetAppName(), CtrlImg::error(), qtf, t_("OK"), t_("Cancel"));
+}
+
+int PromptYesNoOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_QUESTION, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::question(), qtf, false,
+	              t_("&Yes"), t_("&No"), NULL, 0,
+	              YesButtonImage(), NoButtonImage(), Null);
+}
+
+int PromptYesNoAllOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_QUESTION, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::question(), qtf, false,
+	              t_("&Yes"), t_("&No"), t_("All"), 0,
+	              YesButtonImage(), NoButtonImage(), Null);
+}
+
+int ErrorYesNoOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_ERROR, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::error(), qtf, false,
+	              t_("&Yes"), t_("&No"), NULL, 0,
+	              YesButtonImage(), NoButtonImage(), Null);
+}
+
+int PromptYesNoCancelOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_QUESTION, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::question(), qtf, true,
+	              t_("&Yes"), t_("&No"), t_("Cancel"), 0,
+	              YesButtonImage(), NoButtonImage(), Null);
+}
+
+int ErrorYesNoCancelOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_ERROR, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::error(), qtf, true,
+	              t_("&Yes"), t_("&No"), t_("Cancel"), 0,
+	              YesButtonImage(), NoButtonImage(), Null);
+}
+
+int ErrorYesNoAllOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_ERROR, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::error(), qtf, true,
+	              t_("&Yes"), t_("&No"), t_("All"), 0,
+	              YesButtonImage(), NoButtonImage(), Null);
+}
+
+int PromptAbortRetryOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_EXCLAMATION, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::exclamation(), qtf, false,
+	              t_("&Abort"), t_("&Retry"), NULL, 0,
+	              AbortButtonImage(), RetryButtonImage(), Null);
+}
+
+int ErrorAbortRetryOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_ERROR, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::error(), qtf, false,
+	              t_("&Abort"), t_("&Retry"), NULL, 0,
+	              AbortButtonImage(), RetryButtonImage(), Null);
+}
+
+int PromptRetryCancelOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_EXCLAMATION, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::exclamation(), qtf, true,
+	              t_("&Retry"), t_("Cancel"), NULL, 0,
+	              RetryButtonImage(), Null, Null);
+}
+
+int ErrorRetryCancelOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_ERROR, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::error(), qtf, true,
+	              t_("&Retry"), t_("Cancel"), NULL, 0,
+	              RetryButtonImage(), Null, Null);
+}
+
+int PromptAbortRetryIgnoreOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_EXCLAMATION, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::exclamation(), qtf, false,
+	              t_("&Abort"), t_("&Retry"), t_("&Ignore"), 0,
+	              AbortButtonImage(), RetryButtonImage(), Null);
+}
+
+int ErrorAbortRetryIgnoreOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_ERROR, callback(LaunchWebBrowser),
+	              Ctrl::GetAppName(), CtrlImg::error(), qtf, false,
+	              t_("&Abort"), t_("&Retry"), t_("&Ignore"), 0,
+	              AbortButtonImage(), RetryButtonImage(), Null);
+}
+
+int PromptSaveDontSaveCancelOpt1(const char *qtf, const char *opt_id) {
+	return PromptOpt1(opt_id, BEEP_QUESTION, callback(LaunchWebBrowser),
 	              Ctrl::GetAppName(), CtrlImg::question(), qtf, true,
 	              t_("&Save"), t_("&Don't Save"), t_("Cancel"), 0,
 	              CtrlImg::save(), NoButtonImage(), Null);
