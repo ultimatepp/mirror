@@ -515,7 +515,8 @@ public:
 	void     SyncTip();
 	void     CloseTip()                               { if(tip.IsOpen()) tip.Close(); tip.d = NULL;  }
 	
-	void     Illuminate(const WString& text)          { illuminated = text; Refresh(); }
+	void     Illuminate(const WString& text);
+	WString  GetIlluminated() const                   { return illuminated; }
 
 	void     Zoom(int d);
 

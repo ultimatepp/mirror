@@ -319,6 +319,14 @@ void CodeEditor::SelectionChanged()
 	bar.Refresh();
 }
 
+void CodeEditor::Illuminate(const WString& text)
+{
+	if(illuminated != text) {
+		illuminated = text;
+		Refresh();
+	}
+}
+
 bool CodeEditor::InsertRS(int chr, int count) {
 	if(IsReadOnly()) return true;
 	if(IsSelection()) {

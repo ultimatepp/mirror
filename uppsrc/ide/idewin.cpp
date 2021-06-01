@@ -422,6 +422,10 @@ Ide::Ide()
 		bottom.Add(ffound[i].SizePos().SetFrame(NullFrame()));
 	btabs <<= THISBACK(SyncBottom);
 	BTabs();
+	
+	editor.WhenSelectionChanged << [=] {
+		editor2.Illuminate(editor.GetIlluminated());
+	};
 
 	pfsplit.SetPos(2000);
 	pfsplit.Vert(package, filelist);

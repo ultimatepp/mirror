@@ -258,6 +258,7 @@ struct AssistEditor : CodeEditor, Navigator {
 	void           SyncNavigatorPlacement();
 	
 	Event<int>     WhenFontScroll;
+	Event<>        WhenSelectionChanged;
 
 	typedef AssistEditor CLASSNAME;
 

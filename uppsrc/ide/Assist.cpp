@@ -1059,6 +1059,7 @@ void AssistEditor::SelectionChanged()
 	CodeEditor::SelectionChanged();
 	SyncCursor();
 	SyncParamInfo();
+	WhenSelectionChanged();
 }
 
 void AssistEditor::SerializeNavigator(Stream& s)
