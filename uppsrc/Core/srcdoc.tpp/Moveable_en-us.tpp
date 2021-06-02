@@ -20,7 +20,7 @@ topic "Moveable";
 [2 $$0,0#00000000000000000000000000000000:Default]
 [{_}%EN-US 
 [s2; Moveable&]
-[s5; First important node: U`+`+ Moveable is not to be confused with 
+[s5; First important note: U`+`+ Moveable is not to be confused with 
 C`+`+ standard library move semantics.&]
 [s5; Moveable concept represents basic requirement for types stored 
 in Vector flavor of containers (namely Vector, BiVector, Index, 
