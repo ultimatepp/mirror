@@ -253,6 +253,76 @@ void Ctrl::GEvent::operator=(const GEvent& e)
 	Set(e);
 }
 
+static Point s_mousepos;
+
+Point Ctrl::GetMouseInfo(GdkWindow *win, GdkModifierType& mod)
+{
+#if GTK_CHECK_VERSION(3, 20, 0)
+	GdkDisplay *display = gdk_window_get_display (win);
+	GdkDevice *pointer = gdk_seat_get_pointer (gdk_display_get_default_seat (display));
+	double x, y;
+	gdk_window_get_device_position_double (win, pointer, &x, &y, &mod);
+	return s_mousepos; //return Point((int)SCL(x), (int)SCL(y));
+#else
+	gint x, y;
+	gdk_window_get_pointer(win, &x, &y, &mod);
+	return Point(SCL(x), SCL(y));
+#endif
+}
+
+void Ctrl::AddEvent(gpointer user_data, int type, const Value& value, GdkEvent *event)
+{
+	if(Events.GetCount() > 50000)
+		return;
+	GEvent& e = Events.AddTail();
+	e.windowid = (uint32)(uintptr_t)user_data;
+	e.type = type;
+	e.value = value;
+	GdkModifierType mod;
+	e.mousepos = GetMouseInfo(gdk_get_default_root_window(), mod);
+	if(event->type == GDK_MOTION_NOTIFY){
+		GdkEventMotion *mevent = (GdkEventMotion *)event;
+		e.mousepos = s_mousepos = Point(SCL(mevent->x_root), SCL(mevent->y_root));
+	}
+	e.state = (mod & ~(GDK_BUTTON1_MASK|GDK_BUTTON2_MASK|GDK_BUTTON3_MASK)) | MouseState;
+	e.count = 1;
+	e.event = NULL;
+#if GTK_CHECK_VERSION(3, 22, 0)
+	GdkDevice *d = gdk_event_get_source_device(event);
+	if(d && findarg(gdk_device_get_source(d), GDK_SOURCE_PEN, GDK_SOURCE_TOUCHSCREEN) >= 0) {
+		e.pen = true;
+		e.pen_barrel = MouseState & GDK_BUTTON3_MASK;
+		double *axes = NULL;
+		switch(event->type){
+			case GDK_BUTTON_PRESS:
+				gdk_window_set_event_compression(((GdkEventButton *)event)->window, false);
+			case GDK_2BUTTON_PRESS:
+			case GDK_3BUTTON_PRESS:
+				axes = ((GdkEventButton *)event)->axes;
+				break;
+			case GDK_BUTTON_RELEASE:
+				gdk_window_set_event_compression(((GdkEventButton *)event)->window, true);
+				axes = ((GdkEventButton *)event)->axes;
+				break;
+			case GDK_MOTION_NOTIFY:{
+				GdkEventMotion *mevent = (GdkEventMotion *)event;
+				e.mousepos = s_mousepos = Point(SCL(mevent->x_root), SCL(mevent->y_root));
+				axes = ((GdkEventMotion *)event)->axes;
+				break;
+			}
+			default:;
+		}
+		if(axes) {
+			if(!gdk_device_get_axis(d, axes, GDK_AXIS_PRESSURE, &e.pen_pressure)) e.pen_pressure=Null;
+			if(!gdk_device_get_axis(d, axes, GDK_AXIS_ROTATION, &e.pen_rotation)) e.pen_rotation=Null;
+			if(!gdk_device_get_axis(d, axes, GDK_AXIS_XTILT, &e.pen_tilt.x)) e.pen_tilt.x=Null;
+			if(!gdk_device_get_axis(d, axes, GDK_AXIS_YTILT, &e.pen_tilt.y)) e.pen_tilt.y=Null;
+		}
+	}
+#endif
+}
+
+#if 0
 Point Ctrl::GetMouseInfo(GdkWindow *win, GdkModifierType& mod)
 {
 #if GTK_CHECK_VERSION(3, 20, 0)
@@ -309,7 +379,7 @@ void Ctrl::AddEvent(gpointer user_data, int type, const Value& value, GdkEvent *
 		e.event = gtk_get_current_event();
 	}
 }
-
+#endif
 void Ctrl::IMCommit(GtkIMContext *context, gchar *str, gpointer user_data)
 {
 	GuiLock __;
@@ -667,7 +737,7 @@ bool Ctrl::ProcessEvent0(bool *quit, bool fetch)
 			    if(a.type == GDK_SCROLL)
 			        b.value = (int)b.value + (int)a.value;
 				else
-				if(findarg(a.type, GDK_MOTION_NOTIFY, GDK_CONFIGURE) < 0)
+				if(a.type != GDK_CONFIGURE)
 					break;
 				Events.DropHead();
 			}
