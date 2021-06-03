@@ -11,7 +11,6 @@ namespace Upp {
 
 void SetSurface(SystemDraw& w, const Rect& dest, const RGBA *pixels, Size srcsz, Point poff)
 {
-	RTIMING("SetSurface");
 	w.FlushText();
 	Size dsz = dest.GetSize();
 	cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, dsz.cx, dsz.cy);
@@ -41,9 +40,10 @@ struct ImageSysData {
 
 cairo_surface_t *CreateCairoSurface(const Image& img, cairo_surface_t *other)
 {
+	RTIMING("CreateCairoSurface");
 	Size isz = img.GetSize();
 	cairo_format_t fmt = CAIRO_FORMAT_ARGB32;
-	cairo_surface_t *surface = other ? cairo_surface_create_similar_image(other, fmt, isz.cx, isz.cy)
+	cairo_surface_t *surface = other&&0 ? cairo_surface_create_similar_image(other, fmt, isz.cx, isz.cy)
 	                                 : cairo_image_surface_create(fmt, isz.cx, isz.cy);
 	cairo_surface_flush(surface);
 	byte *a = (byte *)cairo_image_surface_get_data(surface);

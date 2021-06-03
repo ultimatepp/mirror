@@ -280,7 +280,7 @@ void Ctrl::AddEvent(gpointer user_data, int type, const Value& value, GdkEvent *
 	e.value = value;
 	GdkModifierType mod;
 	e.mousepos = GetMouseInfo(gdk_get_default_root_window(), mod);
-	if(event->type == GDK_MOTION_NOTIFY){
+	if(event && event->type == GDK_MOTION_NOTIFY){
 		GdkEventMotion *mevent = (GdkEventMotion *)event;
 		e.mousepos = s_mousepos = Point(SCL(mevent->x_root), SCL(mevent->y_root));
 	}
@@ -322,64 +322,6 @@ void Ctrl::AddEvent(gpointer user_data, int type, const Value& value, GdkEvent *
 #endif
 }
 
-#if 0
-Point Ctrl::GetMouseInfo(GdkWindow *win, GdkModifierType& mod)
-{
-#if GTK_CHECK_VERSION(3, 20, 0)
-	GdkDisplay *display = gdk_window_get_display (win);
-	GdkDevice *pointer = gdk_seat_get_pointer (gdk_display_get_default_seat (display));
-	double x, y;
-	gdk_window_get_device_position_double (win, pointer, &x, &y, &mod);
-	return Point((int)SCL(x), (int)SCL(y));
-#else
-	gint x, y;
-	gdk_window_get_pointer(win, &x, &y, &mod);
-	return Point(SCL(x), SCL(y));
-#endif
-}
-
-void Ctrl::AddEvent(gpointer user_data, int type, const Value& value, GdkEvent *event)
-{
-	if(Events.GetCount() > 50000)
-		return;
-	GEvent& e = Events.AddTail();
-	e.windowid = (uint32)(uintptr_t)user_data;
-	e.type = type;
-	e.value = value;
-	GdkModifierType mod;
-	e.mousepos = GetMouseInfo(gdk_get_default_root_window(), mod);
-	e.state = (mod & ~(GDK_BUTTON1_MASK|GDK_BUTTON2_MASK|GDK_BUTTON3_MASK)) | MouseState;
-	e.count = 1;
-	e.event = NULL;
-#if GTK_CHECK_VERSION(3, 22, 0)
-	GdkDevice *d = gdk_event_get_source_device(event);
-	if(d && findarg(gdk_device_get_source(d), GDK_SOURCE_PEN, GDK_SOURCE_TOUCHSCREEN) >= 0) {
-		e.pen = true;
-		e.pen_barrel = MouseState & GDK_BUTTON3_MASK;
-		double *axes = NULL;
-		if(event->type == GDK_MOTION_NOTIFY)
-			axes = ((GdkEventMotion *)event)->axes;
-		if(findarg(event->type, GDK_BUTTON_PRESS, GDK_2BUTTON_PRESS, GDK_3BUTTON_PRESS, GDK_BUTTON_RELEASE) >= 0)
-			axes = ((GdkEventButton *)event)->axes;
-		if(axes) {
-			GdkAxisFlags flags = gdk_device_get_axes (d);
-			if(flags & GDK_AXIS_FLAG_PRESSURE) gdk_device_get_axis(d, axes, GDK_AXIS_PRESSURE, &e.pen_pressure);
-			if(flags & GDK_AXIS_FLAG_ROTATION) gdk_device_get_axis(d, axes, GDK_AXIS_ROTATION, &e.pen_rotation);
-			if(flags & GDK_AXIS_FLAG_XTILT) gdk_device_get_axis(d, axes, GDK_AXIS_XTILT, &e.pen_tilt.x);
-			if(flags & GDK_AXIS_FLAG_YTILT) gdk_device_get_axis(d, axes, GDK_AXIS_YTILT, &e.pen_tilt.y);
-		}
-	}
-#endif
-	if(event) {
-		e.time = gdk_event_get_time(event);
-		e.event = gdk_event_copy(event);
-	}
-	else {
-		e.time = gtk_get_current_event_time();
-		e.event = gtk_get_current_event();
-	}
-}
-#endif
 void Ctrl::IMCommit(GtkIMContext *context, gchar *str, gpointer user_data)
 {
 	GuiLock __;
@@ -404,13 +346,9 @@ void Ctrl::FetchEvents(bool may_block)
 {
 	LLOG("FetchEvents " << may_block);
 	int level = LeaveGuiMutexAll();
-	while(g_main_context_iteration(NULL, may_block)) {
+	while(g_main_context_iteration(NULL, may_block))
 		may_block = false;
-		ProcessInvalids();
-	}
-	ProcessInvalids();
 	EnterGuiMutex(level);
-	ProcessInvalids();
 }
 
 bool Ctrl::IsWaitingEvent0(bool fetch)
