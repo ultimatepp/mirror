@@ -55,6 +55,7 @@ void ImageBuffer::InitAttrs()
 	spot2 = hotspot = Point(0, 0);
 	dots = Size(0, 0);
 	resolution = IMAGE_RESOLUTION_NONE;
+	paintonce = false;
 }
 
 void ImageBuffer::CopyAttrs(const ImageBuffer& img)
@@ -63,6 +64,7 @@ void ImageBuffer::CopyAttrs(const ImageBuffer& img)
 	Set2ndSpot(img.Get2ndSpot());
 	SetDots(img.GetDots());
 	SetResolution(img.GetResolution());
+	PaintOnceHint(img.IsPaintOnceHint());
 }
 
 void ImageBuffer::CopyAttrs(const Image& img)

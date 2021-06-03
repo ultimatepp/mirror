@@ -55,6 +55,7 @@ class ImageBuffer : NoCopy {
 	Point        spot2;
 	Size         dots;
 	int8         resolution;
+	bool         paintonce = false;
 
 	void         Set(Image& img);
 	void         DeepCopy(const ImageBuffer& img);
@@ -89,7 +90,7 @@ public:
 
 	void  CopyAttrs(const ImageBuffer& img);
 	void  CopyAttrs(const Image& img);
-
+	
 	Size  GetSize() const               { return size; }
 	int   GetWidth() const              { return size.cx; }
 	int   GetHeight() const             { return size.cy; }
@@ -114,6 +115,9 @@ public:
 	void  Create(Size sz)               { Create(sz.cx, sz.cy); }
 	bool  IsEmpty() const               { return (size.cx | size.cy) == 0; }
 	void  Clear()                       { Create(0, 0); }
+
+	void  PaintOnceHint(bool b = true)  { paintonce = b; }
+	bool  IsPaintOnceHint() const       { return paintonce; }
 
 	void  operator=(Image& img);
 	void  operator=(ImageBuffer& img);
@@ -206,6 +210,7 @@ public:
 	operator Value() const              { return RichToValue(*this); }
 	
 	bool IsPaintOnly() const            { return data && data->paintonly; }
+	bool IsPaintOnceHint() const        { return data && data->buffer.IsPaintOnceHint(); }
 
 	Image()                             { data = NULL; }
 	Image(const Nuller&)                { data = NULL; }

@@ -168,6 +168,15 @@ undefined. Previous content of ImageBuffer is lost.&]
 of Image to Size(0, 0).&]
 [s3; &]
 [s4; &]
+[s5;:Upp`:`:ImageBuffer`:`:PaintOnceHint`(bool`): [@(0.0.255) void]_[* PaintOnceHint]([@(0.0.255) b
+ool]_[*@3 b]_`=_[@(0.0.255) true])&]
+[s5;:Upp`:`:ImageBuffer`:`:IsPaintOnceHint`(`)const: [@(0.0.255) bool]_[* IsPaintOnceHint
+]()_[@(0.0.255) const]&]
+[s2;%% Sets/gets the hint that the image will likely be painted only 
+once with Draw`::DrawImage. This hint can improve the rendering 
+performance in certain contexts. Default is false.&]
+[s3; &]
+[s4; &]
 [s5;:ImageBuffer`:`:operator`=`(Image`&`): [*@(0.0.255) void][* _operator`=(][*_^Image^ Ima
 ge][*@(0.0.255) `&][* _][*@3 img][* )]&]
 [s5;:ImageBuffer`:`:operator`=`(ImageBuffer`&`): [*@(0.0.255) void][* _operator`=(][*_^ImageBuffer^ I

@@ -13,18 +13,7 @@ void SetSurface(SystemDraw& w, const Rect& dest, const RGBA *pixels, Size srcsz,
 {
 	w.FlushText();
 	Size dsz = dest.GetSize();
-	cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, dsz.cx, dsz.cy);
-	cairo_surface_flush(surface);
-	byte *a = (byte *)cairo_image_surface_get_data(surface);
-	int stride = cairo_format_stride_for_width(CAIRO_FORMAT_ARGB32, dsz.cx);
-	for(int i = 0; i < dsz.cy; i++) {
-		int sl = poff.y + i;
-		if(i >= 0 && i < srcsz.cy)
-			Copy((RGBA *)a, pixels + srcsz.cx * sl + poff.x,
-			     minmax(srcsz.cx - poff.x, 0, min(dsz.cx, srcsz.cx)));
-		a += stride;
-	}
-	cairo_surface_mark_dirty(surface);
+	cairo_surface_t *surface = cairo_image_surface_create_for_data((byte *)pixels, CAIRO_FORMAT_ARGB32, dsz.cx, dsz.cy, 4 * dsz.cx);
 	cairo_set_source_surface(w, surface, dest.left, dest.top);
 	cairo_paint(w);
 	cairo_surface_destroy(surface);
@@ -40,10 +29,9 @@ struct ImageSysData {
 
 cairo_surface_t *CreateCairoSurface(const Image& img, cairo_surface_t *other)
 {
-	RTIMING("CreateCairoSurface");
 	Size isz = img.GetSize();
 	cairo_format_t fmt = CAIRO_FORMAT_ARGB32;
-	cairo_surface_t *surface = other&&0 ? cairo_surface_create_similar_image(other, fmt, isz.cx, isz.cy)
+	cairo_surface_t *surface = other ? cairo_surface_create_similar_image(other, fmt, isz.cx, isz.cy)
 	                                 : cairo_image_surface_create(fmt, isz.cx, isz.cy);
 	cairo_surface_flush(surface);
 	byte *a = (byte *)cairo_image_surface_get_data(surface);
@@ -88,6 +76,10 @@ void SystemDraw::SysDrawImageOp(int x, int y, const Image& img, Color color)
 	FlushText();
 	if(img.GetLength() == 0)
 		return;
+	if(img.IsPaintOnceHint()) {
+		SetSurface(*this, x, y, img.GetWidth(), img.GetHeight(), ~img);
+		return;
+	}
 	LLOG("SysDrawImageOp " << img.GetSerialId() << ' ' << x << ", " << y << ", "<< img.GetSize());
 	ImageSysDataMaker m;
 	static LRUCache<ImageSysData, int64> cache;

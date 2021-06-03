@@ -163,6 +163,12 @@ st]&]
 [s5;:Image`:`:operator Value`(`)const: operator_Value()[@(64) _][@(0.0.255) const]&]
 [s2;%% Converts Image to Value.&]
 [s3; &]
+[s4; &]
+[s5;:Upp`:`:Image`:`:IsPaintOnceHint`(`)const: [@(0.0.255) bool]_[* IsPaintOnceHint]()_[@(0.0.255) c
+onst]&]
+[s2;%% Signals that Image is supposed to be painted only once with 
+Draw`::DrawImage.,&]
+[s3; &]
 [s0; &]
 [ {{10000t/25b/25@1 [s0; [* Constructor Detail]]}}&]
 [s3; &]
