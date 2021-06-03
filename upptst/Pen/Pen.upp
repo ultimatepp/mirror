@@ -1,0 +1,11 @@
+description "Pen support (drawing with pen, reacting to pressure)\377";
+
+uses
+	CtrlLib;
+
+file
+	main.cpp;
+
+mainconfig
+	"" = "GUI";
+
