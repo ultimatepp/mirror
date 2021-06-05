@@ -299,11 +299,11 @@ void Ide::FindInFiles(bool replace) {
 					n++;
 				}
 			}
+			FFound().HeaderTab(2).SetText(Format("Source line (%d)", FFound().GetCount()));
 			if(!IsNull(pattern))
 				FFound().Add(Null, Null, AsString(n) + " occurrence(s) have been found.");
 			else
 				FFound().Add(Null, Null, AsString(n) + "  matching file(s) have been found.");
-			FFound().HeaderTab(2).SetText(Format("Source line (%d)", FFound().GetCount()));
 		}
 	}
 }
