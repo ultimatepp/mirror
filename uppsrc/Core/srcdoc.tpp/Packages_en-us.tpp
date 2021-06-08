@@ -1,5 +1,4 @@
 topic "Standard Ultimate++  packages";
-[2 $$0,0#00000000000000000000000000000000:Default]
 [l288;i1120;a17;O9;~~~.1408;2 $$1,0#10431211400427159095818037425705:param]
 [a83;*R6 $$2,5#31310162474203024125188417583966:caption]
 [b83;*4 $$3,5#07864147445237544204411237157677:title]
@@ -21,6 +20,7 @@ topic "Standard Ultimate++  packages";
 [2 $$19,0#53580023442335529039900623488521:gap]
 [t4167;C2 $$20,20#70211524482531209251820423858195:class`-nested]
 [b50;2 $$21,21#03324558446220344731010354752573:Par]
+[2 $$0,0#00000000000000000000000000000000:Default]
 [{_}%EN-US 
 [s2; Standard Ultimate`+`+  packages&]
 [ {{1851:8149 [s0; Core]
@@ -41,8 +41,10 @@ topic "Standard Ultimate++  packages";
 :: [s0; Oracle interface]
 :: [s0; MySql]
 :: [s0; MySql interface]
-:: [s0; OleDB]
-:: [s0; OLE DB interface]
+:: [s0; ODBC]
+:: [s0; ODBC interface for compatible dabases]
+:: [s0; MSSQL]
+:: [s0; Extends ODBC with MSSQL database schema features]
 :: [s0; SqlCtrl]
 :: [s0; SQL GUI]
 :: [s0; Image]
