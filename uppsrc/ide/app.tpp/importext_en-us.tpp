@@ -86,6 +86,8 @@ to be compiled and helps with setting up include path.&]
 [s7; -|frmts/`*&]
 [s7; ;&]
 [s7; &]
+[s7; exclude(WIN32) linux`*.cpp;&]
+[s7; &]
 [s7; includes `*.h `*.hpp;&]
 [s7; &]
 [s5; In this case, line with `"files`" basically says that all .cpp 
@@ -111,4 +113,10 @@ by import.ext can be removed)]
 [s0; &]
 [s0; Note that all file paths are relative to the root of package 
 directory.&]
+[s0; &]
+[s0; Directives are processed in the order they appear in the file, 
+gradually adding and removing files in question.&]
+[s0; &]
+[s0; Directives can have condition on configuration flags, placed 
+in parenthesis. Conditions follow the same rules as package conditions.&]
 [s0; ]]
