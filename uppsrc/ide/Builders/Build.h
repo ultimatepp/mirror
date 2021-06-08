@@ -64,7 +64,7 @@ public:
 	String       main_conf;
 	Index<String> cfg;
 	FileTime     start_time;
-	
+
 	bool         makefile_svn_revision = true;
 
 	void CreateHost(Host& host, bool darkmode = false, bool disable_uhd = false);
@@ -91,9 +91,10 @@ public:
 	void Clean();
 	void RebuildAll();
 	void SaveMakeFile(const String& fn, bool exporting);
-	
+	void SaveCCJ(const String& fn, bool exporting);
+
 	MakeBuild();
-	
+
 private:
 	static String GetInvalidBuildMethodError(const String& method);
 };

@@ -14,12 +14,16 @@ String BrcToC(CParser& binscript, String basedir);
 
 Vector<String> SvnInfo(const String& package);
 
+String MakeIdent(const char *name);
+
 struct CppBuilder : Builder {
 	virtual String GetTargetExt() const;
 	virtual void   CleanPackage(const String& package, const String& outdir);
-	
+
 	const Workspace& wspc;
 	Time             targettime;
+	Vector<String>   CFLAGS;
+	Vector<String>   CXXFLAGS;
 
 	String                 GetSharedLibPath(const String& package) const;
 	int                    AllocSlot();
@@ -40,7 +44,7 @@ struct CppBuilder : Builder {
 
 	String                 GetMakePath(String fn) const;
 	Point                  ExtractVersion() const;
-	
+
 	// POSIX lib files has names in form of libXXXXXX.so.ver.minver(.rel)
 	// so we can't simply get file extension
 	String                 GetSrcType(String fn) const;
@@ -56,6 +60,9 @@ struct CppBuilder : Builder {
 	virtual void           AddMakeFile(MakeFile& makefile, String package,
 		const Vector<String>& all_uses, const Vector<String>& all_libraries,
 		const Index<String>& common_config, bool exporting);
+
+	virtual void AddCCJ(MakeFile& mfinfo, String package,
+		const Index<String>& common_config, bool exporting, bool last_ws);
 
 	CppBuilder() : wspc(GetIdeWorkspace()) {}
 };
@@ -88,7 +95,7 @@ struct OwcBuilder : CppBuilder {
 	    String& linkoptions, const Vector<String>& all_uses, const Vector<String>& all_libraries, int optimize);
 	virtual bool   Link(const Vector<String>& linkfile, const String& linkoptions, bool createmap);
 	virtual bool   Preprocess(const String& package, const String& file, const String& target, bool asmout);
-	
+
 	String         IncludesDefinesTargetTime(const String& package, const Package& pkg);
 
 	String CompilerName(bool isCpp = true) const;

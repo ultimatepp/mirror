@@ -16,6 +16,7 @@ file
 	Builders.h options(BUILDER_OPTION) PCH,
 	CppBuilder.cpp,
 	MakeFile.cpp,
+	CCJ.cpp,
 	coff.h,
 	Builders readonly separator,
 	GccBuilder.cpp,

@@ -81,13 +81,14 @@ CONSOLE_APP_MAIN
 	ide.makefile_svn_revision = false;
 	bool clean = false;
 	bool makefile = false;
+	bool ccfile = false;
 	bool deletedir = true;
 	int  exporting = 0;
 	bool run = false;
 	String mkf;
 
 	Vector<String> param, runargs;
-	
+
 	const Vector<String>& args = CommandLine();
 	for(int i = 0; i < args.GetCount(); i++) {
 		String a = args[i];
@@ -107,6 +108,7 @@ CONSOLE_APP_MAIN
 				case 'X': exporting = 2; break;
 				case 'k': deletedir = false; break;
 				case 'u': ide.use_target = true; break;
+				case 'j': ccfile = true; break;
 				case 'M': {
 					makefile = true;
 					if(s[1] == '=') {
@@ -154,7 +156,7 @@ CONSOLE_APP_MAIN
 		else
 			param.Add(a);
 	}
-	
+
 	if(param.GetCount() >= 2) {
 		String v = GetUmkFile(param[0] + ".var");
 		if(IsNull(v)) {
@@ -231,6 +233,12 @@ CONSOLE_APP_MAIN
 		}
 
 		ide.method = m;
+
+		if(ccfile) {
+			ide.SaveCCJ(GetFileDirectory(PackagePath(ide.main)) + "compile_commands.json", false);
+			SetExitCode(0);
+			return;
+		}
 
 		if(clean)
 			ide.Clean();

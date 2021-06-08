@@ -1,6 +1,6 @@
 #include "Builders.h"
 
-static String MakeIdent(const char *name)
+String MakeIdent(const char *name)
 {
 	String out;
 	for(; *name; name++)
@@ -153,7 +153,7 @@ void CppBuilder::AddMakeFile(MakeFile& makefile, String package,
 		else
 			makefile.linkfileend << " \\\n\t\t\t-l" << ln;
 	}
-	
+
 	for(int i = 0; i < pkg.GetCount(); i++)
 		if(!pkg[i].separator) {
 			String gop = Gather(pkg[i].option, config.GetKeys());
@@ -222,6 +222,17 @@ void CppBuilder::AddMakeFile(MakeFile& makefile, String package,
 */
 }
 
+JsonArray& operator<<(JsonArray& array, const Vector<String>& v) {
+	for (const String& s: v)
+		array << s;
+	return array;
+}
+
+Vector<String>& operator<<(Vector<String>& array, const Vector<String>& v) {
+	array.Append(v);
+	return array;
+}
+
 Point CppBuilder::ExtractVersion() const
 {
 	Point v = Point(Null, Null);
@@ -263,10 +274,10 @@ void MakeBuild::SaveMakeFile(const String& fn, bool exporting)
 	Host host;
 	CreateHost(host, false, false);
 	One<Builder> b = CreateBuilder(&host);
-	
+
 	if(!b)
 		return;
-	
+
 	const TargetMode& tm = GetTargetMode();
 
 	String makefile;
@@ -307,7 +318,7 @@ void MakeBuild::SaveMakeFile(const String& fn, bool exporting)
 
 	inclist << " -I./";
 	inclist << " -I$(UPPOUT)"; // build_info.h is created there
-	
+
 	makefile << "\n"
 		"UPPOUT = " << (exporting ? "_out/" : GetMakePath(AdjustMakePath(AppendFileName(uppout, "")), win32)) << "\n"
 		"CINC   = " << inclist << "\n"
@@ -386,7 +397,7 @@ void MakeBuild::SaveMakeFile(const String& fn, bool exporting)
 		linkfiles << mf.linkfiles;
 		linkfileend << mf.linkfileend;
 	}
-	
+
 	makefile
 		<< config
 		<< install

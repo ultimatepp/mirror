@@ -172,6 +172,14 @@ String Gather(const Array<OptItem>& set, const Vector<String>& conf, bool nospac
 	return s;
 }
 
+Vector<String> GatherV(const Array<OptItem>& set, const Vector<String>& conf) {
+	Vector<String> s;
+	for(int i = 0; i < set.GetCount(); i++)
+		if(MatchWhen(set[i].when, conf))
+			s << set[i].text;
+	return s;
+}
+
 int    GetType(const Vector<String>& conf, const char *flags) {
 	Vector<String> f = SplitFlags(flags);
 	int q = FLAG_UNDEFINED;

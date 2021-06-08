@@ -90,7 +90,7 @@ public:
 	virtual String                    GetDefaultMethod();
 	virtual VectorMap<String, String> GetMethodVars(const String& method);
 	virtual String                    GetMethodName(const String& method);
-	
+
 	virtual bool      IsPersistentFindReplace() = 0;
 
 	virtual int       IdeGetHydraThreads() = 0;
@@ -272,7 +272,7 @@ String AsStringWhen(const String& when);
 struct OptItem {
 	String   when;
 	String   text;
-	
+
 	String ToString() const { return when + ": " + text ; }
 };
 
@@ -291,6 +291,7 @@ struct CustomStep {
 
 Vector<String> Combine(const Vector<String>& conf, const char *flags);
 String Gather(const Array<OptItem>& set, const Vector<String>& conf, bool nospace = false);
+Vector<String> GatherV(const Array<OptItem>& set, const Vector<String>& conf);
 
 bool   HasFlag(const Vector<String>& conf, const char *flag);
 
@@ -432,7 +433,7 @@ struct Builder {
 	Host            *host;
 	Index<String>    config;
 	String           method;
-	
+
 	String           compiler;
 	String           outdir;
 	Vector<String>   include;
@@ -446,16 +447,18 @@ struct Builder {
 	String           debug_link;
 	String           release_link;
 	String           version;
-	
+
 	String           script;
 	String           mainpackage;
-	
+
 	bool             doall;
 	bool             main_conf;
 	bool             allow_pch;
 	FileTime         start_time;
-	
+
 	Index<String>    pkg_config; // names of packages for pkg-config
+	Vector<String>   CINC;
+	Vector<String>   Macro;
 
 	VectorMap<String, int> tmpfilei; // for naming automatic response files
 
@@ -474,11 +477,14 @@ struct Builder {
 	virtual void AddMakeFile(MakeFile& mfinfo, String package,
 		const Vector<String>& all_uses, const Vector<String>& all_libraries,
 		const Index<String>& common_config, bool exporting) {}
+	virtual void AddCCJ(MakeFile& mfinfo, String package,
+		const Index<String>& common_config, bool exporting, bool last_ws) {}
 	virtual String GetTargetExt() const = 0;
+	virtual void SaveBuildInfo(const String& package) {}
 
 	Builder()          { doall = false; main_conf = false; }
 	virtual ~Builder() {}
-	
+
 	// TODO: move other methods if needed
 	void                   ChDir(const String& path);
 	String                 GetPathQ(const String& path) const;
@@ -540,7 +546,7 @@ public:
 		int    offset;
 		int    off_meta_offset;
 		int    len_meta_offset;
-		
+
 		void Compress(String& data);
 	};
 
