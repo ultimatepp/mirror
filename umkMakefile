@@ -849,6 +849,107 @@ $(OutDir_ide_Builders)MakeFile.o: $(UPPDIR1)ide/Builders/MakeFile.cpp \
 	$(UPPDIR1)uppconfig.h
 	$(CXX) -c -x c++ $(CXXFLAGS) $(CINC) $(Macro_ide_Builders)  $(UPPDIR1)ide/Builders/MakeFile.cpp -o $(OutDir_ide_Builders)MakeFile.o
 
+$(OutDir_ide_Builders)CCJ.o: $(UPPDIR1)ide/Builders/CCJ.cpp \
+	$(UPPDIR1)Core/Algo.h \
+	$(UPPDIR1)Core/App.h \
+	$(UPPDIR1)Core/AString.hpp \
+	$(UPPDIR1)Core/Atomic.h \
+	$(UPPDIR1)Core/BiCont.h \
+	$(UPPDIR1)Core/Callback.h \
+	$(UPPDIR1)Core/CallbackN.i \
+	$(UPPDIR1)Core/CallbackNP.i \
+	$(UPPDIR1)Core/CallbackR.i \
+	$(UPPDIR1)Core/CharSet.h \
+	$(UPPDIR1)Core/CharSet.i \
+	$(UPPDIR1)Core/CoAlgo.h \
+	$(UPPDIR1)Core/Color.h \
+	$(UPPDIR1)Core/Complex.h \
+	$(UPPDIR1)Core/config.h \
+	$(UPPDIR1)Core/Convert.h \
+	$(UPPDIR1)Core/Core.h \
+	$(UPPDIR1)Core/CoSort.h \
+	$(UPPDIR1)Core/CoWork.h \
+	$(UPPDIR1)Core/Defs.h \
+	$(UPPDIR1)Core/Diag.h \
+	$(UPPDIR1)Core/FilterStream.h \
+	$(UPPDIR1)Core/FixedMap.h \
+	$(UPPDIR1)Core/Fn.h \
+	$(UPPDIR1)Core/Format.h \
+	$(UPPDIR1)Core/Function.h \
+	$(UPPDIR1)Core/Gtypes.h \
+	$(UPPDIR1)Core/Hash.h \
+	$(UPPDIR1)Core/Heap.h \
+	$(UPPDIR1)Core/Huge.h \
+	$(UPPDIR1)Core/i18n.h \
+	$(UPPDIR1)Core/Index.h \
+	$(UPPDIR1)Core/Index.hpp \
+	$(UPPDIR1)Core/Inet.h \
+	$(UPPDIR1)Core/InMap.hpp \
+	$(UPPDIR1)Core/InVector.h \
+	$(UPPDIR1)Core/InVector.hpp \
+	$(UPPDIR1)Core/JSON.h \
+	$(UPPDIR1)Core/Lang.h \
+	$(UPPDIR1)Core/Lang_s.h \
+	$(UPPDIR1)Core/lib/lz4.h \
+	$(UPPDIR1)Core/LocalProcess.h \
+	$(UPPDIR1)Core/Map.h \
+	$(UPPDIR1)Core/Map.hpp \
+	$(UPPDIR1)Core/Mem.h \
+	$(UPPDIR1)Core/Mt.h \
+	$(UPPDIR1)Core/Obsolete.h \
+	$(UPPDIR1)Core/Ops.h \
+	$(UPPDIR1)Core/Other.h \
+	$(UPPDIR1)Core/Parser.h \
+	$(UPPDIR1)Core/Path.h \
+	$(UPPDIR1)Core/Profile.h \
+	$(UPPDIR1)Core/Ptr.h \
+	$(UPPDIR1)Core/Range.h \
+	$(UPPDIR1)Core/SIMD_NEON.h \
+	$(UPPDIR1)Core/SIMD_SSE2.h \
+	$(UPPDIR1)Core/Sort.h \
+	$(UPPDIR1)Core/Sorted.h \
+	$(UPPDIR1)Core/SplitMerge.h \
+	$(UPPDIR1)Core/Stream.h \
+	$(UPPDIR1)Core/String.h \
+	$(UPPDIR1)Core/t_.h \
+	$(UPPDIR1)Core/TimeDate.h \
+	$(UPPDIR1)Core/Topic.h \
+	$(UPPDIR1)Core/Topt.h \
+	$(UPPDIR1)Core/Tuple.h \
+	$(UPPDIR1)Core/Utf.hpp \
+	$(UPPDIR1)Core/Util.h \
+	$(UPPDIR1)Core/Uuid.h \
+	$(UPPDIR1)Core/Value.h \
+	$(UPPDIR1)Core/Value.hpp \
+	$(UPPDIR1)Core/ValueCache.h \
+	$(UPPDIR1)Core/ValueUtil.h \
+	$(UPPDIR1)Core/ValueUtil.hpp \
+	$(UPPDIR1)Core/Vcont.h \
+	$(UPPDIR1)Core/Vcont.hpp \
+	$(UPPDIR1)Core/Win32Util.h \
+	$(UPPDIR1)Core/XML.h \
+	$(UPPDIR1)Core/Xmlize.h \
+	$(UPPDIR1)Core/Xmlize.hpp \
+	$(UPPDIR1)Core/z.h \
+	$(UPPDIR1)Esc/Esc.h \
+	$(UPPDIR1)ide/Builders/Android.h \
+	$(UPPDIR1)ide/Builders/Build.h \
+	$(UPPDIR1)ide/Builders/BuilderComponents.h \
+	$(UPPDIR1)ide/Builders/Builders.h \
+	$(UPPDIR1)ide/Core/Core.h \
+	$(UPPDIR1)ide/Core/Host.h \
+	$(UPPDIR1)ide/Core/Logger.h \
+	$(UPPDIR1)plugin/bz2/bz2.h \
+	$(UPPDIR1)plugin/bz2/lib/bzlib.h \
+	$(UPPDIR1)plugin/lz4/lz4.h \
+	$(UPPDIR1)plugin/lzma/lzma.h \
+	$(UPPDIR1)plugin/z/lib/zconf.h \
+	$(UPPDIR1)plugin/z/lib/zlib.h \
+	$(UPPDIR1)plugin/zstd/lib/zstd.h \
+	$(UPPDIR1)plugin/zstd/zstd.h \
+	$(UPPDIR1)uppconfig.h
+	$(CXX) -c -x c++ $(CXXFLAGS) $(CINC) $(Macro_ide_Builders)  $(UPPDIR1)ide/Builders/CCJ.cpp -o $(OutDir_ide_Builders)CCJ.o
+
 $(OutDir_ide_Builders)GccBuilder.o: $(UPPDIR1)ide/Builders/GccBuilder.cpp \
 	$(UPPDIR1)Core/Algo.h \
 	$(UPPDIR1)Core/App.h \
@@ -2529,6 +2630,7 @@ $(OutDir_ide_Builders)BuilderUtils.o: $(UPPDIR1)ide/Builders/BuilderUtils.cpp \
 $(OutDir_ide_Builders)Builders.a: \
 	$(OutDir_ide_Builders)CppBuilder.o \
 	$(OutDir_ide_Builders)MakeFile.o \
+	$(OutDir_ide_Builders)CCJ.o \
 	$(OutDir_ide_Builders)GccBuilder.o \
 	$(OutDir_ide_Builders)MscBuilder.o \
 	$(OutDir_ide_Builders)JavaBuilder.o \
@@ -2549,6 +2651,7 @@ $(OutDir_ide_Builders)Builders.a: \
 	$(AR) $(OutDir_ide_Builders)Builders.a \
 		$(OutDir_ide_Builders)CppBuilder.o \
 		$(OutDir_ide_Builders)MakeFile.o \
+		$(OutDir_ide_Builders)CCJ.o \
 		$(OutDir_ide_Builders)GccBuilder.o \
 		$(OutDir_ide_Builders)MscBuilder.o \
 		$(OutDir_ide_Builders)JavaBuilder.o \
