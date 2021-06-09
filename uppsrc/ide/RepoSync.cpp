@@ -281,6 +281,7 @@ void RepoSync::SyncList()
 			actions = ListGit(path);
 			if(!actions || w.read_only) {
 				o.commit = false;
+				o.push = false;
 				o.commit.Disable();
 			}
 			if(w.read_only) {
