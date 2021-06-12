@@ -8,155 +8,167 @@ bool Ide::FindLineError(const String& ln, FindLineErrorCache& cache, ErrorInfo& 
 		cache.upp = GetUppDir();
 		cache.init = true;
 	}
-	const char *s = ln;
-	while(*s == ' ' || *s == '\t')
-		s++;
-	for(; s < ln.End(); s++) {
-		if(*s != '\"' && (byte)*s >= 32 && *s != '(' && (f.file.GetLength() < 3 || *s != ':'))
-			f.file.Cat(*s);
-		else {
-			if(*s == '\"') {
-				f.file = Null;
-				s++;
-				while(*s && *s != '\"')
-					f.file.Cat(*s++);
-				if(*s)
+	const char *s0 = ln;
+	while(*s0 == ' ' || *s0 == '\t')
+		s0++;
+	for(;;) {
+		const char *s = s0;
+		f.file.Clear();
+		for(; s < ln.End(); s++) {
+			if(*s != '\"' && (byte)*s >= 32 && *s != '(' && (f.file.GetLength() < 3 || *s != ':'))
+				f.file.Cat(*s);
+			else {
+				if(*s == '\"') {
+					f.file = Null;
 					s++;
-			}
-			String file = f.file;
-			int e = file.GetLength();
-			while(e > 0 && file[e - 1] == ' ')
-				e--;
-			file.Trim(e);
-			file = TrimLeft(file);
-
-			int q = cache.file.Find(file);
-			if(q < 0) {
-				String file0 = file;
-			#ifdef PLATFORM_WIN32
-				if(file[0] == '\\' || file[0] == '/')
-					file = String(cache.upp[0], 1) + ':' + file;
-			#endif
-				bool exists = false;
-				if(!IsFullPath(file) && *file != '\\' && *file != '/') {
-					if(cache.wspc_paths.IsEmpty()) {
-						::Workspace  wspc;
-						wspc.Scan(main);
-						for(int i = 0; i < wspc.GetCount(); i++)
-							cache.wspc_paths.Add(GetFileDirectory(PackagePath(wspc[i])));
-					}
-					for(int i = 0; i < cache.wspc_paths.GetCount(); i++) {
-						String path = AppendFileName(cache.wspc_paths[i], file);
-						String ext = ToLower(GetFileExt(path));
-						if(findarg(ext, ".obj", ".lib", ".o", ".so", ".a", ".", "") < 0) {
-							FindFile ff;
-							if(ff.Search(path) && ff.IsFile()) {
-								file = path;
-								exists = true;
-								break;
+					while(*s && *s != '\"')
+						f.file.Cat(*s++);
+					if(*s)
+						s++;
+				}
+				String file = f.file;
+				int e = file.GetLength();
+				while(e > 0 && file[e - 1] == ' ')
+					e--;
+				file.Trim(e);
+				file = TrimLeft(file);
+	
+				int q = cache.file.Find(file);
+				if(q < 0) {
+					String file0 = file;
+				#ifdef PLATFORM_WIN32
+					if(file[0] == '\\' || file[0] == '/')
+						file = String(cache.upp[0], 1) + ':' + file;
+				#endif
+					bool exists = false;
+					if(!IsFullPath(file) && *file != '\\' && *file != '/') {
+						if(cache.wspc_paths.IsEmpty()) {
+							::Workspace  wspc;
+							wspc.Scan(main);
+							for(int i = 0; i < wspc.GetCount(); i++)
+								cache.wspc_paths.Add(GetFileDirectory(PackagePath(wspc[i])));
+						}
+						for(int i = 0; i < cache.wspc_paths.GetCount(); i++) {
+							String path = AppendFileName(cache.wspc_paths[i], file);
+							String ext = ToLower(GetFileExt(path));
+							if(findarg(ext, ".obj", ".lib", ".o", ".so", ".a", ".", "") < 0) {
+								FindFile ff;
+								if(ff.Search(path) && ff.IsFile()) {
+									file = path;
+									exists = true;
+									break;
+								}
 							}
 						}
 					}
+					file = FollowCygwinSymlink(file);
+					if(!IsFullPath(file) || !exists && !FileExists(file) || !IsTextFile(file))
+						file = Null;
+					cache.file.Add(file0, file);
 				}
-				file = FollowCygwinSymlink(file);
-				if(!IsFullPath(file) || !exists && !FileExists(file) || !IsTextFile(file))
-					file = Null;
-				cache.file.Add(file0, file);
-			}
-			else
-				file = cache.file[q];
-			if(file.GetCount()) {
-				f.file = file;
-				while(*s && !IsDigit(*s)) {
-					if(*s == '/' || IsAlpha(*s))
-						return false;
-					s++;
-				}
-				f.lineno = f.linepos = 0;
-				CParser p(s);
-				try {
-					if(p.IsInt())
-						f.lineno = p.ReadInt();
-					if(p.Char(':') && p.IsInt())
-						f.linepos = p.ReadInt();
-				}
-				catch(CParser::Error) {}
-				const char *ms = p.GetPtr();
-				if(ln.Find(": warning") >= 0)
-					f.kind = 2;
-				else if(ln.Find(": error") >= 0 || ln.Find(": fatal error") >= 0)
-					f.kind = 1;
 				else
-					f.kind = 3;
-				const char *hs = ms;
-				while(!IsLetter(*hs) && *hs)
-					hs++;
-				f.message = *hs ? hs : ms;
-				f.message = TrimLeft(f.message);
-				Vector<String> conf = SplitFlags(mainconfigparam, true);
-				String uppout = GetVar("OUTPUT");
-				int upplen = uppout.GetLength();
-				if(cache.is_java && f.file.GetLength() > upplen
-				&& !MemICmp(f.file, uppout, upplen) && f.file[upplen] == DIR_SEP) { // check for preprocessed file
-					FileIn fi(f.file);
-					if(fi.IsOpen()) {
-						String fake_file = f.file;
-						int fake_line = 1;
-						int file_line = 1;
-						while(!fi.IsEof())
-						{
-							String line = fi.GetLine();
-							const char *p = line;
-							if(p[0] == '/' && p[1] == '/' && p[2] == '#')
+					file = cache.file[q];
+				DDUMP(file);
+				DDUMP(q);
+				if(file.GetCount()) {
+					f.file = file;
+					while(*s && !IsDigit(*s)) {
+						if(*s == '/' || IsAlpha(*s))
+							return false;
+						s++;
+					}
+					f.lineno = f.linepos = 0;
+					CParser p(s);
+					try {
+						if(p.IsInt())
+							f.lineno = p.ReadInt();
+						if(p.Char(':') && p.IsInt())
+							f.linepos = p.ReadInt();
+					}
+					catch(CParser::Error) {}
+					const char *ms = p.GetPtr();
+					if(ln.Find(": warning") >= 0)
+						f.kind = 2;
+					else if(ln.Find(": error") >= 0 || ln.Find(": fatal error") >= 0)
+						f.kind = 1;
+					else
+						f.kind = 3;
+					const char *hs = ms;
+					while(!IsLetter(*hs) && *hs)
+						hs++;
+					f.message = *hs ? hs : ms;
+					f.message = TrimLeft(f.message);
+					Vector<String> conf = SplitFlags(mainconfigparam, true);
+					String uppout = GetVar("OUTPUT");
+					int upplen = uppout.GetLength();
+					if(cache.is_java && f.file.GetLength() > upplen
+					&& !MemICmp(f.file, uppout, upplen) && f.file[upplen] == DIR_SEP) { // check for preprocessed file
+						FileIn fi(f.file);
+						if(fi.IsOpen()) {
+							String fake_file = f.file;
+							int fake_line = 1;
+							int file_line = 1;
+							while(!fi.IsEof())
 							{
-								p += 3;
-								if(p[0] == 'l' && p[1] == 'i' && p[2] == 'n' && p[3] == 'e')
-									p += 4;
-								while(*p == ' ' || *p == '\t')
-									p++;
-								if(IsDigit(*p))
+								String line = fi.GetLine();
+								const char *p = line;
+								if(p[0] == '/' && p[1] == '/' && p[2] == '#')
 								{
-									fake_line = stou(p, &p);
+									p += 3;
+									if(p[0] == 'l' && p[1] == 'i' && p[2] == 'n' && p[3] == 'e')
+										p += 4;
 									while(*p == ' ' || *p == '\t')
 										p++;
-									if(*p == '\"')
-										p++;
-									fake_file.Clear();
-									while(*p && *p != '\"')
-										if(*p == '/')
-										{
-											fake_file.Cat('/');
-											if(p[1] == '/')
-												p++;
+									if(IsDigit(*p))
+									{
+										fake_line = stou(p, &p);
+										while(*p == ' ' || *p == '\t')
 											p++;
-										}
-										else
-											fake_file.Cat(*p++);
+										if(*p == '\"')
+											p++;
+										fake_file.Clear();
+										while(*p && *p != '\"')
+											if(*p == '/')
+											{
+												fake_file.Cat('/');
+												if(p[1] == '/')
+													p++;
+												p++;
+											}
+											else
+												fake_file.Cat(*p++);
+									}
+									file_line++;
+									continue;
+								}
+								if(f.lineno <= file_line) {
+									f.file = fake_file;
+									f.lineno = fake_line;
+									f.linepos = 0;
+									break;
 								}
 								file_line++;
-								continue;
+								fake_line++;
 							}
-							if(f.lineno <= file_line) {
-								f.file = fake_file;
-								f.lineno = fake_line;
-								f.linepos = 0;
-								break;
-							}
-							file_line++;
-							fake_line++;
 						}
 					}
+					return f.lineno > 0;
 				}
-				return f.lineno > 0;
+				else
+				if(*s == ':' || !strchr(s, '/') && !strchr(s, '\\')) // safe to say this is final
+					break;
+				else
+					f.file.Cat(*s); // File is not complete, e.g.: C:\Program Files (x86)\Microsoft Visual Studio 10.0\Vc\Include\string.h(186)
 			}
-			else
-			if(*s == ':' || !strchr(s, '/') && !strchr(s, '\\')) // safe to say this is final
-				return false;
-			else
-				f.file.Cat(*s); // File is not complete, e.g.: C:\Program Files (x86)\Microsoft Visual Studio 10.0\Vc\Include\string.h(186)
 		}
+		while(*s0 != ' ' && *s0 != '\t') { // skip to next whitespace to try again
+			if(s0 >= ln.End())
+				return false;
+			s0++;
+		}
+		while(*s0 == ' ' || *s0 == '\t')
+			s0++;
 	}
-	return false;
 }
 
 void Ide::FindError()
