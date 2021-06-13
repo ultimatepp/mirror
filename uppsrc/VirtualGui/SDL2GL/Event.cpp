@@ -4,31 +4,7 @@
 
 namespace Upp {
 
-dword fbKEYtoK(dword chr) {
-	if(chr == SDLK_TAB)
-		chr = K_TAB;
-	else
-	if(chr == SDLK_SPACE)
-		chr = K_SPACE;
-	else
-	if(chr == SDLK_RETURN)
-		chr = K_RETURN;
-	else {
-		extern Tuple<int, int> SDL_key_map[];
-		for(int i = 0; SDL_key_map[i].a; i++)
-			if(chr == SDL_key_map[i].b) {
-				chr = SDL_key_map[i].a;
-				break;
-			}
-	}
-	if(chr == K_ALT_KEY || chr == K_CTRL_KEY || chr == K_SHIFT_KEY)
-		return chr;
-	if(GetCtrl()) chr |= K_CTRL;
-	if(GetAlt()) chr |= K_ALT;
-	if(GetShift()) chr |= K_SHIFT;
-
-	return chr;
-}
+extern dword fbKEYtoK(dword chr);
 
 dword lastbdowntime[8] = {0};
 dword isdblclick[8] = {0};
@@ -73,9 +49,9 @@ void SDL2GUI::HandleSDLEvent(SDL_Event* event)
 	case SDL_KEYDOWN:
 		switch(event->key.keysym.sym) {
 			case SDLK_LSHIFT: modkeys |= KM_LSHIFT; break;
-			case SDLK_RSHIFT: modkeys |= KM_RSHIFT; break;	
+			case SDLK_RSHIFT: modkeys |= KM_RSHIFT; break;
 			case SDLK_LCTRL: modkeys |= KM_LCTRL; break;
-			case SDLK_RCTRL: modkeys |= KM_RCTRL; break;	
+			case SDLK_RCTRL: modkeys |= KM_RCTRL; break;
 			case SDLK_LALT: modkeys |= KM_LALT; break;
 			case SDLK_RALT: modkeys |= KM_RALT; break;
 		}
