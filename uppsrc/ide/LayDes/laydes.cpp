@@ -237,8 +237,8 @@ void LayDes::Paint(Draw& w)
 	if(setting.paintgrid) {
 		int gx = minmax((int)~setting.gridx, 1, 32);
 		int gy = minmax((int)~setting.gridy, 1, 32);
-		for(int x = 0; x < l.size.cx; x += gx)
-			for(int y = 0; y < l.size.cy; y += gy)
+		for(int x = 0; x < lsz.cx; x += gx)
+			for(int y = 0; y < lsz.cy; y += gy)
 				w.DrawRect(x, y, 1, 1, SColorPaper);
 	}
 	DrawFrame(w, -1, -1, lsz.cx + 2, lsz.cy + 2, SColorText);
@@ -285,7 +285,6 @@ void LayDes::Paint(Draw& w)
 	}
 	if(HasCapture() && draghandle == 14)
 		DrawFrame(w, dragrect.Normalized(), LtRed);
-	w.End();
 	w.End();
 }
 
