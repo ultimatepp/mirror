@@ -1,5 +1,7 @@
 #include "LayDes.h"
 
+#include <ide/Common/Common.h>
+
 #define LTIMING(x) //TIMING(x)
 
 #define KEYNAMESPACE LayoutKeys
@@ -193,6 +195,12 @@ void LayDes::OptionBar(Bar& bar)
 	bar.Add("Settings..", THISBACK(Settings));
 }
 
+void LayDes::HelpBar(Bar& bar)
+{
+	bar.Add("Learn more about Layout Designer..", IdeCommonImg::Help(),
+		[=] { LaunchWebBrowser("https://www.ultimatepp.org/app$ide$LayoutDes_en-us.html"); });
+}
+
 void LayDes::MainToolBar(Bar& bar)
 {
 	EditBar(bar);
@@ -208,6 +216,9 @@ void LayDes::MainToolBar(Bar& bar)
 	SizeBar(bar);
 	bar.Separator();
 	SpringBar(bar);
+	bar.GapRight();
+	bar.Separator();
+	HelpBar(bar);
 }
 
 void LayDes::ItemBar(Bar& bar)

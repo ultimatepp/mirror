@@ -449,6 +449,7 @@ private:
 	void        MoveBar(Bar& bar);
 	void        SpringBar(Bar& bar);
 	void        OptionBar(Bar& bar);
+	void        HelpBar(Bar& bar);
 	void        MainToolBar(Bar& bar);
 
 	void        LayoutBar(Bar& bar);
