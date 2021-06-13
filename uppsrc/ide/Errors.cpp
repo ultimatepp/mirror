@@ -68,8 +68,6 @@ bool Ide::FindLineError(const String& ln, FindLineErrorCache& cache, ErrorInfo& 
 				}
 				else
 					file = cache.file[q];
-				DDUMP(file);
-				DDUMP(q);
 				if(file.GetCount()) {
 					f.file = file;
 					while(*s && !IsDigit(*s)) {
