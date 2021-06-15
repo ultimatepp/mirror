@@ -2,7 +2,7 @@
 
 #define LLOG(x) // DLOG(x)
 
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 
 @interface AppDelegate : NSObject<NSApplicationDelegate>
 {

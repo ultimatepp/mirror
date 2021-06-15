@@ -347,7 +347,7 @@ private:
 	bool         nodarkadjust;
 	bool         action_taken = false; // local menu resulted in action invoked (not cancel)
 
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	One<Bar>     host_bar;
 	bool ExecuteHostBar(Ctrl *owner, Point p);
 	void CreateHostBar(One<Bar>& bar);
@@ -415,7 +415,7 @@ public:
 	MenuBar& MaxIconSize(Size sz)                   { maxiconsize = sz; return *this; }
 	Size     GetMaxIconSize() const                 { return maxiconsize; }
 	MenuBar& NoDarkAdjust(bool b = true)            { nodarkadjust = b; return *this; }
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	MenuBar& UppMenu()                              { host_bar.Clear(); return *this; }
 #endif
 

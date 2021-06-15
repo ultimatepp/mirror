@@ -107,11 +107,11 @@ class TopWindowFrame;
 #define GUIPLATFORM_TOPWINDOW_DECLS_INCLUDE <VirtualGui/Top.h>
 
 class PrinterJob { // Dummy only...
-	NilDraw             nil;
+	NilDraw             nil_;
 	Vector<int>         pages;
 
 public:
-	Draw&               GetDraw()                       { return nil; }
+	Draw&               GetDraw()                       { return nil_; }
 	operator            Draw&()                         { return GetDraw(); }
 	const Vector<int>&  GetPages() const                { return pages; }
 	int                 operator[](int i) const         { return 0; }

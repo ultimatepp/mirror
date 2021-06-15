@@ -398,7 +398,7 @@ Image GetFileIcon(const String& folder, const String& filename, bool isdir, bool
 
 #endif
 
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 struct FileIconMaker : ImageMaker {
 	String file;
 	bool   exe;
@@ -464,7 +464,7 @@ Image NativePathIcon0(const char *path, bool folder, bool large)
 #ifdef PLATFORM_POSIX
 	String p = path;
 	FindFile ff(path);
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	return GetFileIcon(path, folder, ff.GetMode() & 0111, large);
 #else
 	bool isdrive = folder && ((p == "/media") || (p == "/mnt"));
@@ -529,7 +529,7 @@ bool Load(FileList& list, const String& dir, const char *patterns, bool dirs,
 			filesystem.Find(AppendFileName(dir, filesystem.IsWin32() ? "*.*" : "*"));
 		if(ffi.IsEmpty())
 			return false;
-	#if defined(PLATFORM_POSIX) && !defined(PLATFORM_COCOA)
+	#if defined(PLATFORM_POSIX) && !defined(GUI_COCOA)
 		bool isdrive = dir == "/media" || dir == "/mnt";
 	#endif
 		for(int t = 0; t < ffi.GetCount(); t++) {
@@ -549,7 +549,7 @@ bool Load(FileList& list, const String& dir, const char *patterns, bool dirs,
 			   MatchSearch(fi.filename, search) && show) {
 				Image img;
 			#ifdef PLATFORM_POSIX
-			#ifdef PLATFORM_COCOA
+			#ifdef GUI_COCOA
 				img = GetFileIcon(AppendFileName(dir, fi.filename), fi.is_directory, fi.unix_mode & 0111, false, lazyicons);
 			#else
 				img = isdrive ? PosixGetDriveImage(fi.filename, false)
@@ -2178,7 +2178,7 @@ FileSel& FileSel::AddPlace(const String& path, const Image& m, const String& nam
 
 FileSel& FileSel::AddPlace(const String& path, const String& name, const char* group, int row)
 {
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	return AddPlace(path, GetFileIcon(NormalizePath(path), true, false, false), name, group, row);
 #else
 	return AddPlace(path, GetDirIcon(NormalizePath(path)), name, group, row);
@@ -2248,7 +2248,7 @@ void FileSel::AddSystemPlaces(int row)
 FileSel& FileSel::AddStandardPlaces()
 {
 	AddPlace(GetHomeDirectory(), t_("Home"), "PLACES:FOLDER");
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	AddPlace(GetSpecialDirectory(SF_NSDesktopDirectory), t_("Desktop"), "PLACES:FOLDER");
 	AddPlace(GetSpecialDirectory(SF_NSMusicDirectory), t_("Music"), "PLACES:FOLDER");
 	AddPlace(GetSpecialDirectory(SF_NSPicturesDirectory), t_("Pictures"), "PLACES:FOLDER");

@@ -3,7 +3,13 @@
 #ifdef PLATFORM_COCOA
 
 #include <Carbon/Carbon.h> 
+
+#endif
+
 #include <CtrlLib/CtrlLib.h>
+
+#ifdef GUI_COCOA
+
 #include <CtrlCore/CocoMM.h>
 #include "ChCocoMM.h"
 

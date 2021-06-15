@@ -5,7 +5,7 @@
 
 namespace Upp {
 
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 
 FileSelNative::FileSelNative()
 {

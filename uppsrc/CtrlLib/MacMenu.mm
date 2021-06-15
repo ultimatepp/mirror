@@ -1,9 +1,10 @@
 #ifndef flagSKELETON
 
 #include <CtrlLib/CtrlLib.h>
-#include <CtrlCore/CocoMM.h>
 
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
+
+#include <CtrlCore/CocoMM.h>
 
 #define LLOG(x) // DLOG(x)
 

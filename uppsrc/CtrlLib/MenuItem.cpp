@@ -422,7 +422,7 @@ void SubMenuBase::Pull(Ctrl *item, Point p, Size sz)
 	menu.KillDelayedClose();
 	if(!item->IsOpen() || menu.IsOpen()) return;
 	menu.Clear();
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	menu.UppMenu();
 #endif
 	if(parentmenu)

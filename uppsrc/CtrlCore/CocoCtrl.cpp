@@ -1,6 +1,6 @@
 #include <CtrlCore/CtrlCore.h>
 
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 
 #define LLOG(x) // DLOG(x)
 

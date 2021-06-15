@@ -1,7 +1,7 @@
 #include "CtrlLib.h"
 #include "ChCocoMM.h"
 
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 
 namespace Upp {
 

@@ -1,6 +1,6 @@
 #include "CocoMM.h"
 
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 
 #define LLOG(x)
 #define LTIMING(x)

@@ -3,7 +3,7 @@
 
 #include <Core/config.h>
 
-#ifdef PLATFORM_COCOA
+#if defined(PLATFORM_COCOA) && !defined(VIRTUALGUI)
 
 #define Point NS_Point
 #define Rect  NS_Rect
@@ -13,7 +13,11 @@
 #undef  Rect
 #undef  Size
 
+#endif
+
 #include "CtrlCore.h"
+
+#ifdef GUI_COCOA
 
 namespace Upp {
 

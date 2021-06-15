@@ -389,7 +389,7 @@ Tuple<dword, const char *> KeyNames__[ ] = {
 	{ K_PLUS, tt_("key\v[+]") }, { K_MINUS, tt_("key\v[-]") }, { K_COMMA, tt_("key\v[,]") }, { K_PERIOD, tt_("key\v[.]") },
 	{ K_SEMICOLON, tt_("key\v[;]") }, { K_SLASH, tt_("key\v[/]") }, { K_GRAVE, tt_("key\v[`]") }, { K_LBRACKET, tt_("key\v[[]") },
 	{ K_BACKSLASH, tt_("key\v[\\]") }, { K_RBRACKET, tt_("key\v[]]") }, { K_QUOTEDBL, tt_("key\v[']") },
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	{ K_OPTION_KEY, tt_("key\vOption") },
 #endif
 	{ IK_DBL_CLICK, tt_("key\v[double-click]") },

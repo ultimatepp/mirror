@@ -1,3 +1,5 @@
+#define GUI_COCOA
+
 namespace Upp {
 
 struct PointCG; // represents CGPoint, used to isolate Cocoa/AppKit includes

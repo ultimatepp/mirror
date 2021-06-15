@@ -72,7 +72,7 @@ MenuBar::MenuBar()
 	arealook = -1;
 	maxiconsize = Null;
 	nodarkadjust = false;
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	CreateHostBar(host_bar);
 #endif
 }
@@ -124,7 +124,7 @@ void MenuBar::Clear()
 Bar::Item& MenuBar::AddItem(Event<> cb)
 {
 	LLOG("MenuBar::AddItem " << Name());
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	if(host_bar && !IsChild())
 		return host_bar->AddItem(cb);
 #endif
@@ -148,7 +148,7 @@ Bar::Item& MenuBar::AddItem(Event<> cb)
 Bar::Item& MenuBar::AddSubMenu(Event<Bar&> proc)
 {
 	LLOG("MenuBar::AddSubMenu " << Name());
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	if(host_bar && !IsChild())
 		return host_bar->AddSubMenu(proc);
 #endif
@@ -178,7 +178,7 @@ Bar::Item& MenuBar::AddSubMenu(Event<Bar&> proc)
 
 void MenuBar::Separator()
 {
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	if(host_bar && !IsChild())
 		return host_bar->Separator();
 #endif
@@ -604,7 +604,7 @@ void MenuBar::PopUp(Ctrl *owner, Point p, Size rsz)
 
 bool MenuBar::IsEmpty() const
 {
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	if(host_bar && !IsChild())
 		return host_bar->IsEmpty();
 #endif
@@ -619,7 +619,7 @@ bool MenuBar::Execute(Ctrl *owner, Point p)
 		return false;
 	ows.Add(owner);
 	action_taken = false;
-#ifdef PLATFORM_COCOA
+#ifdef GUI_COCOA
 	if(host_bar && !IsChild())
 		action_taken = ExecuteHostBar(owner, p);
 	else
