@@ -122,11 +122,6 @@ Image RescaleFilter(const Image& img, Size sz, const Rect& sr,
 					for(int xx = 2 * ax; xx-- > 0;) {
 						const RGBA& s = l[*xd++];
 						int weight = ky * *xd++;
-						if(s.a != 255) {
-							DDUMP(s);
-							DDUMP(x);
-							DDUMP(y);
-						}
 						red   += weight * s.r;
 						green += weight * s.g;
 						blue  += weight * s.b;
