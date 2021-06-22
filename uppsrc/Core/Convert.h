@@ -17,8 +17,12 @@ int64         ScanInt64(const char *ptr, const char **endptr, int radix);
 int64         ScanInt64(const char *ptr, const char **endptr);
 int64         ScanInt64(const char *ptr);
 
-double        ScanDouble(const char *ptr, const char **endptr = NULL, bool accept_comma = true);
-double        ScanDouble(const wchar *ptr, const wchar **endptr = NULL, bool accept_comma = true);
+double        ScanDouble(const char *ptr, const char **endptr, bool accept_comma);
+double        ScanDouble(const wchar *ptr, const wchar **endptr, bool accept_comma);
+double        ScanDouble(const char *ptr, const char **endptr);
+double        ScanDouble(const wchar *ptr, const wchar **endptr);
+double        ScanDouble(const char *ptr);
+double        ScanDouble(const wchar *ptr);
 
 double        Atof(const char *s);
 

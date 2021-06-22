@@ -386,25 +386,13 @@ bool CParser::IsDouble2() const
 double CParser::ReadDouble()
 {
 	LTIMING("ReadDouble");
-	int sign = Sgn();
-	if(!IsDigit(*term) && *term != '.')
-		ThrowError("missing number");
-	double n = 0;
-	while(IsDigit(*term))
-		n = 10 * n + *term++ - '0';
-	if(Char('.')) {
-		double q = 1;
-		while(IsDigit(*term)) {
-			q = 0.1 * q;
-			n += q * (*term++ - '0');
-		}
-	}
-	if(Char('e') || Char('E'))
-		n *= pow(10.0, ReadInt());
-	DoSpaces();
-	n = sign * n;
+	double n;
+	const char *t = ScanDbl<char, byte>(n, term, '.');
+	if(!t) ThrowError("missing number");
 	if(!IsFin(n))
 		ThrowError("number is too big");
+	term = t;
+	DoSpaces();
 	return n;
 }
 

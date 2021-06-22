@@ -177,12 +177,16 @@ const CHAR *ScanDbl(double& result, const CHAR *s, int alt_dp = '.')
 	};
 #endif
 	double number = (double)ReadNumber();
+	extern double ipow10_table[601];
 	auto pow10i = [](double i) {
-		extern double ipow10_table[];
-		if(i >= -100 && i <= 100)
-			return ipow10_table[(int)i + 100];
+		if(i >= -300 && i <= 300)
+			return ipow10_table[(int)i + 300];
 		return pow(10.0, i);
 	};
+	ONCELOCK {
+		for(int i = -300; i <= 300; i++)
+			ipow10_table[i + 300] = pow(10.0, i);
+	}
 	if(*s == '.' || *s == alt_dp) {
 		s++;
 		int dp = 0;
