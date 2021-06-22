@@ -1,11 +1,11 @@
-template <typename CHAR>
+template <typename CHAR, typename BYTE>
 force_inline
 void SkipSpaces__(const CHAR *&s)
 {
 	while((BYTE)*s <= ' ') s++;
 }
 
-template <typename CHAR>
+template <typename CHAR, typename BYTE>
 force_inline
 int ScanSgn__(const CHAR *&s)
 {
@@ -16,7 +16,7 @@ int ScanSgn__(const CHAR *&s)
 		sign = -1;
 		s++;
 	}
-	SkipSpaces__(s);
+	SkipSpaces__<CHAR, BYTE>(s);
 	return sign;
 }
 
@@ -78,7 +78,7 @@ template <typename CHAR, typename BYTE, typename UINT, int base>
 force_inline
 const CHAR *ScanUint(UINT& result, const CHAR *s, bool& overflow)
 {
-	SkipSpaces__(s);
+	SkipSpaces__<CHAR, BYTE>(s);
 	return ScanUint0<CHAR, BYTE, UINT, base>(result, s, overflow);
 }
 
@@ -95,8 +95,8 @@ template <typename CHAR, typename BYTE, typename UINT, typename INT, int base>
 force_inline
 const CHAR *ScanInt(INT& result, const CHAR *s, bool& overflow)
 {
-	SkipSpaces__(s);
-	int sgn = ScanSgn__(s);
+	SkipSpaces__<CHAR, BYTE>(s);
+	int sgn = ScanSgn__<CHAR, BYTE>(s);
 	UINT uresult;
 	s = ScanUint0<CHAR, BYTE, UINT, base>(uresult, s, overflow);
 	if(sgn < 0) {
@@ -123,8 +123,8 @@ template <typename CHAR, typename BYTE>
 force_inline
 const CHAR *ScanDbl(double& result, const CHAR *s, int alt_dp = '.')
 {
-	SkipSpaces__(s);
-	double sign = ScanSgn__(s);
+	SkipSpaces__<CHAR, BYTE>(s);
+	double sign = ScanSgn__<CHAR, BYTE>(s);
 	if(!IsDigit(*s) && *s != '.' && *s != alt_dp)
 		return NULL;
 #ifdef CPU_64
@@ -197,7 +197,7 @@ const CHAR *ScanDbl(double& result, const CHAR *s, int alt_dp = '.')
 	number *= sign;
 	if(*s == 'e' || *s == 'E') {
 		s++;
-		double sign = ScanSgn__(s);
+		double sign = ScanSgn__<CHAR, BYTE>(s);
 		double exp = sign * ReadNumber();
 		number *= pow10i((int)exp);
 	}
