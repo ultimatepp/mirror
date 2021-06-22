@@ -28,8 +28,8 @@ CONSOLE_APP_MAIN
 	DDUMP(ScanDouble("1.23"));
 	DDUMP(ScanDouble("-1.23e-33"));
 	DDUMP(ScanDouble("z"));
-	DDUMP(ScanDouble("1,23e33", NULL, true));
-	DDUMP(ScanDouble("1,23e33", NULL, false));
+	DDUMP(ScanDouble("1,23e33", 0, true));
+	DDUMP(ScanDouble("1,23e33", 0, false));
 
 	DDUMP(StrDbl("1.23"));
 	DDUMP(StrDbl("1,23e-33"));
