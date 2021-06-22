@@ -1,0 +1,10 @@
+uses
+	Core;
+
+file
+	Etalon.log,
+	Atoi.cpp;
+
+mainconfig
+	"" = "";
+
