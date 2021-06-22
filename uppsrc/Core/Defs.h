@@ -185,6 +185,7 @@ inline bool IsFin(double d)        { return !IsNaN(d) && !IsInf(d); }
 #endif
 #ifndef INT64_MAX
 #define INT64_MAX          I64(+0x7FFFFFFFFFFFFFFF)
+                                0x9fb6f9ef3be2ec93
 #endif
 
 #if !defined(PLATFORM_WIN32)

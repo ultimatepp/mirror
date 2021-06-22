@@ -132,6 +132,7 @@ file
 	Format.h,
 	Format.cpp,
 	Convert.h,
+	Convert.hpp,
 	Convert.cpp,
 	Color.h,
 	Color.cpp,

@@ -430,12 +430,13 @@ onst]&]
 [s4; &]
 [s5;:TopWindow`:`:FrameLess`(bool`): [_^TopWindow^ TopWindow][@(0.0.255) `&]_[* FrameLess](
 [@(0.0.255) bool]_[*@3 b]_`=_[@(0.0.255) true])&]
-[s2;%%  [%-*@3 b].&]
+[s2;%% Creates window without border decorations (like windows title 
+var or any resizing borders).&]
 [s3;%% &]
 [s4; &]
 [s5;:TopWindow`:`:IsFrameLess`(`)const: [@(0.0.255) bool]_[* IsFrameLess]()_[@(0.0.255) con
 st]&]
-[s2;%% &]
+[s2;%% Returns FrameLess status.&]
 [s3; &]
 [s4; &]
 [s5;:TopWindow`:`:Urgent`(bool`): [_^TopWindow^ TopWindow][@(0.0.255) `&]_[* Urgent]([@(0.0.255) b

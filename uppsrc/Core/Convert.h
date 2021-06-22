@@ -5,10 +5,17 @@ unsigned      stou(const wchar *ptr, void *endptr = NULL, unsigned radix = 10);
 uint64        stou64(const char *s, void *endptr = NULL, unsigned radix = 10);
 uint64        stou64(const wchar *s, void *endptr = NULL, unsigned radix = 10);
 
-int           ScanInt(const char *ptr, const char **endptr = NULL, int radix = 10);
+#include "Convert.hpp"
+
 int           ScanInt(const wchar *ptr, const wchar **endptr = NULL, int radix = 10);
 
-int64         ScanInt64(const char *ptr, const char **endptr = NULL, int radix = 10);
+int           ScanInt(const char *ptr, const char **endptr, int radix);
+int           ScanInt(const char *ptr, const char **endptr);
+int           ScanInt(const char *ptr);
+
+int64         ScanInt64(const char *ptr, const char **endptr, int radix);
+int64         ScanInt64(const char *ptr, const char **endptr);
+int64         ScanInt64(const char *ptr);
 
 double        ScanDouble(const char *ptr, const char **endptr = NULL, bool accept_comma = true);
 double        ScanDouble(const wchar *ptr, const wchar **endptr = NULL, bool accept_comma = true);

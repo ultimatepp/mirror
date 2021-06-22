@@ -226,11 +226,14 @@ int  CParser::Sgn()
 
 int  CParser::ReadInt() {
 	LTIMING("ReadInt");
-	int sign = Sgn();
-	uint32 n = ReadNumber(10);
-	if(sign > 0 ? n > INT_MAX : n > (uint32)INT_MAX + 1)
-		ThrowError("number is too big");
-	return sign * (int)n;
+	int n;
+	bool overflow = false;
+	const char *t = ScanInt<char, byte, dword, int, 10>(n, term, overflow);
+	if(!t) ThrowError("missing number");
+	if(overflow) ThrowError("number is too big");
+	term = t;
+	DoSpaces();
+	return n;
 }
 
 int CParser::ReadInt(int min, int max)
@@ -244,11 +247,14 @@ int CParser::ReadInt(int min, int max)
 int64 CParser::ReadInt64()
 {
 	LTIMING("ReadInt64");
-	int sign = Sgn();
-	uint64 n = ReadNumber64(10);
-	if(sign > 0 ? n > INT64_MAX : n > (uint64)INT64_MAX + 1)
-		ThrowError("number is too big");
-	return sign * n;
+	int64 n;
+	bool overflow = false;
+	const char *t = ScanInt<char, byte, uint64, int64, 10>(n, term, overflow);
+	if(!t) ThrowError("missing number");
+	if(overflow) ThrowError("number is too big");
+	term = t;
+	DoSpaces();
+	return n;
 }
 
 int64 CParser::ReadInt64(int64 min, int64 max)
@@ -272,41 +278,91 @@ bool CParser::IsNumber(int base) const
 uint32  CParser::ReadNumber(int base)
 {
 	LTIMING("ReadNumber");
-	uint32 n = 0;
-	int q = ctoi(*term);
-	if(q < 0 || q >= base)
-		ThrowError("missing number");
-	for(;;) {
-		int c = ctoi(*term);
-		if(c < 0 || c >= base)
-			break;
-		uint32 n1 = n;
-		n = base * n + c;
-		if(n1 > n)
-			ThrowError("number is too big");
-		term++;
+
+	uint32 n;
+	bool overflow = false;
+	const char *t;
+
+	switch(base) {
+	case 10:
+		t = ScanUint<char, byte, uint32, 10>(n, term, overflow);
+		break;
+	case 8:
+		t = ScanUint<char, byte, uint32, 8>(n, term, overflow);
+		break;
+	case 2:
+		t = ScanUint<char, byte, uint32, 2>(n, term, overflow);
+		break;
+	case 16:
+		t = ScanUint<char, byte, uint32, 16>(n, term, overflow);
+		break;
+	default:
+		uint32 n = 0;
+		int q = ctoi(*term);
+		if(q < 0 || q >= base)
+			ThrowError("missing number");
+		for(;;) {
+			int c = ctoi(*term);
+			if(c < 0 || c >= base)
+				break;
+			uint32 n1 = n;
+			n = base * n + c;
+			if(n1 > n)
+				ThrowError("number is too big");
+			term++;
+		}
+		DoSpaces();
+		return n;
 	}
+	if(!t) ThrowError("missing number");
+	if(overflow) ThrowError("number is too big");
+	term = t;
 	DoSpaces();
 	return n;
 }
 
 uint64  CParser::ReadNumber64(int base)
 {
-	LTIMING("ReadNumber");
-	uint64 n = 0;
-	int q = ctoi(*term);
-	if(q < 0 || q >= base)
-		ThrowError("missing number");
-	for(;;) {
-		int c = ctoi(*term);
-		if(c < 0 || c >= base)
-			break;
-		uint64 n1 = n;
-		n = base * n + c;
-		if(n1 > n)
-			ThrowError("number is too big");
-		term++;
+	LTIMING("ReadNumber64");
+
+	uint32 n;
+	bool overflow = false;
+	const char *t;
+
+	switch(base) {
+	case 10:
+		t = ScanUint<char, byte, uint32, 10>(n, term, overflow);
+		break;
+	case 8:
+		t = ScanUint<char, byte, uint32, 8>(n, term, overflow);
+		break;
+	case 2:
+		t = ScanUint<char, byte, uint32, 2>(n, term, overflow);
+		break;
+	case 16:
+		t = ScanUint<char, byte, uint32, 16>(n, term, overflow);
+		break;
+	default:
+		uint64 n = 0;
+		int q = ctoi(*term);
+		if(q < 0 || q >= base)
+			ThrowError("missing number");
+		for(;;) {
+			int c = ctoi(*term);
+			if(c < 0 || c >= base)
+				break;
+			uint64 n1 = n;
+			n = base * n + c;
+			if(n1 > n)
+				ThrowError("number is too big");
+			term++;
+		}
+		DoSpaces();
+		return n;
 	}
+	if(!t) ThrowError("missing number");
+	if(overflow) ThrowError("number is too big");
+	term = t;
 	DoSpaces();
 	return n;
 }

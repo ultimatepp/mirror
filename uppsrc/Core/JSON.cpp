@@ -329,7 +329,7 @@ template<> void Jsonize(JsonIO& io, Date& var)
 		}
 		if(IsString(v)) {
 			String text = Filter(~v, CharFilterDigit);
-			if(text.GetCount() > 6) {
+			if(text.GetCount() >= 8) {
 				Date d;
 				d.year = ScanInt(text.Left(4));
 				d.month = ScanInt(text.Mid(4, 2));
@@ -359,14 +359,14 @@ template<> void Jsonize(JsonIO& io, Time& var)
 		}
 		if(IsString(v)) {
 			String text = Filter(~v, CharFilterDigit);
-			if(text.GetCount() > 10) {//seconds may be missing
+			if(text.GetCount() >= 12) { //seconds may be missing
 				Time tm;
 				tm.year = ScanInt(text.Left(4));
 				tm.month = ScanInt(text.Mid(4, 2));
 				tm.day = ScanInt(text.Mid(6, 2));
 				tm.hour = ScanInt(text.Mid(8, 2));
 				tm.minute = ScanInt(text.Mid(10, 2));
-				tm.second = ScanInt(text.Mid(12, 2));
+				tm.second = text.GetCount() > 12 ? ScanInt(text.Mid(12)) : 0;
 				if(tm.IsValid()) {
 					var = tm;
 					return;
