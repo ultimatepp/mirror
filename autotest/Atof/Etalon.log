@@ -1,0 +1,64 @@
+* C:\upp\out\autotest\CLANGx64.Debug.Debug_Full\Atof.exe 22.06.2021 13:32:55, user: cxl
+
+ScanDouble(".23") = 0.23
+ScanDouble("1.23") = 1.23
+ScanDouble("-1.23e-33") = -1.23e-33
+ScanDouble("z") = 
+ScanDouble("1,23e33", 0, true) = 1.23e33
+ScanDouble("1,23e33", 0, false) = 1
+StrDbl("1.23") = 1.23
+StrDbl("1,23e-33") = 1.23e-33
+--------
+x = 1
+x = 2
+x = 3
+x = 1.23
+x = 12340000000
+x = -0.0000000001345
+x = 0.23
+x = 1.23
+x = 0.23
+--------
+x = 1
+x = 2
+x = 3
+x = 1.23
+x = 12340000000
+x = -0.0000000001345
+x = 0.23
+x = 1.23
+x = 0.23
+--------
+x = 1
+x = 2
+x = 3
+x = 1.23
+x = 12340000000
+x = -0.0000000001345
+x = 0.23
+x = 1
+--------
+CParser("1").ReadDouble() = 1
+CParser("1.23").ReadDouble() = 1.23
+CParser("1.23e-33").ReadDouble() = 1.23e-33
+CParser("-1.23e-33").ReadDouble() = -1.23e-33
+--------
+p.ReadDouble() = 1
+p.ReadDouble() = 2
+p.ReadDouble() = 3
+p.ReadDouble() = 1.23
+p.ReadDouble() = 12340000000
+p.ReadDouble() = -0.0000000001345
+--------
+p.ReadDouble() = 1
+p.ReadDouble() = 2
+p.ReadDouble() = 3
+p.ReadDouble() = 1.23
+p.ReadDouble() = 12340000000
+p.ReadDouble() = -0.0000000001345
+p.ReadDouble() = 0.23
+p.ReadDouble() = 1
+--------
+e = (1,1): missing number
+Atof("x") = 0
+Atof("-1.234E+50") = -1.234e50
