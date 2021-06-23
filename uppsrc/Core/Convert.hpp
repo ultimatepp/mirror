@@ -2,7 +2,7 @@ template <typename CHAR, typename BYTE>
 force_inline
 void SkipSpaces__(const CHAR *&s)
 {
-	while((BYTE)*s <= ' ') s++;
+	while(*s && (BYTE)*s <= ' ') s++;
 }
 
 template <typename CHAR, typename BYTE>
@@ -44,7 +44,7 @@ const CHAR *ScanUint0(UINT& result, const CHAR *s, bool& overflow)
 	const int base4 = base * base3;
 	for(;;) {
 		UINT n0 = n;
-		auto CheckOverflow = [&] { if(n0 > n) overflow = true; };
+		auto CheckOverflow = [&](UINT n1) { if(n0 > n1) overflow = true; };
 		if(c1 < 0 || c1 >= base) {
 			result = n;
 			return s;
@@ -52,23 +52,23 @@ const CHAR *ScanUint0(UINT& result, const CHAR *s, bool& overflow)
 		int c2 = Get(1);
 		if(c2 < 0 || c2 >= base) {
 			result = base * n + c1;
-			CheckOverflow();
+			CheckOverflow(result);
 			return s + 1;
 		}
 		int c3 = Get(2);
 		if(c3 < 0 || c3 >= base) {
 			result = base2 * n + base * c1 + c2;
-			CheckOverflow();
+			CheckOverflow(result);
 			return s + 2;
 		}
 		int c4 = Get(3);
 		if(c4 < 0 || c4 >= base) {
 			result = base3 * n + base2 * c1 + base * c2 + c3;
-			CheckOverflow();
+			CheckOverflow(result);
 			return s + 3;
 		}
 		n = base4 * n + base3 * c1 + base2 * c2 + base * c3 + c4;
-		CheckOverflow();
+		CheckOverflow(n);
 		s += 4;
 		c1 = Get(0);
 	}
@@ -99,13 +99,15 @@ const CHAR *ScanInt(INT& result, const CHAR *s, bool& overflow)
 	int sgn = ScanSgn__<CHAR, BYTE>(s);
 	UINT uresult;
 	s = ScanUint0<CHAR, BYTE, UINT, base>(uresult, s, overflow);
-	if(sgn < 0) {
-		result = INT(sgn * uresult);
-		if(result > 0) overflow = true;
-	}
-	else {
-		result = INT(uresult);
-		if(result < 0) overflow = true;
+	if(s) {
+		if(sgn < 0) {
+			result = INT(sgn * uresult);
+			if(result > 0) overflow = true;
+		}
+		else {
+			result = INT(uresult);
+			if(result < 0) overflow = true;
+		}
 	}
 	return s;
 }
