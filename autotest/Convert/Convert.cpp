@@ -9,7 +9,16 @@ void Test(Convert& cv, const char *s, Value res)
 	if(IsError(res))
 		ASSERT(IsError(v));
 	else
-		ASSERT(v == res);
+	if(IsNumber(v)) {
+		double x = res;
+		double y = v;
+		if(y == 0)
+			ASSERT(x == 0);
+		else
+			ASSERT(abs((x - y) / x) < 0.00000000000001);
+	}
+	else
+		ASSERT(res == v);
 }
 
 CONSOLE_APP_MAIN
