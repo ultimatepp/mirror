@@ -42,6 +42,8 @@
 	typedef retval (call fn##_type) args; fn##_type *fn;
 #define FN0_CN FN_CN
 
+#define DATA(type, name) type *name;
+
 struct DLLTYPE{
 	DLLTYPE();
 
@@ -64,6 +66,7 @@ private:
 
 #undef FN_CN
 #undef FN0_CN
+#undef DATA
 
 // ---------
 
@@ -108,6 +111,7 @@ bool DLLTYPE::Load()
 
 #define FN_CN(retval, call, fn, args, name)  name,
 #define FN0_CN(retval, call, fn, args, name) "?" name,
+#define DATA(type, name) #name,
 
 		const char *name[] =
 		{
@@ -117,12 +121,14 @@ bool DLLTYPE::Load()
 
 #undef FN_CN
 #undef FN0_CN
+#undef DATA
 
 // --- FnPtr map
 
 
 #define FN_CN(retval, call, fn, args, name)  &fn,
 #define FN0_CN FN_CN
+#define DATA(type, name) &name,
 
 		void *proc[] =
 		{
@@ -132,6 +138,7 @@ bool DLLTYPE::Load()
 
 #undef FN_CN
 #undef FN0_CN
+#undef DATA
 
 		// --- Proc pointers
 
