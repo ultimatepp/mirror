@@ -597,7 +597,6 @@ Image RenderSVGImage(Size sz, const char *svg, Event<String, String&> resloader)
 	Size isz((int)ceil(iszf.cx), (int)ceil(iszf.cy));
 	if(isz.cx <= 0 || isz.cy <= 0)
 		return Null;
-	RLOG("===================== PAINT");
 	ImageBuffer ib(isz);
 	BufferPainter sw(ib);
 	sw.Clear(White());
