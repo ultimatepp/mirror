@@ -34,7 +34,7 @@ CONSOLE_APP_MAIN
 	DDUMP(StrDbl("1.23"));
 	DDUMP(StrDbl("1,23e-33"));
 	
-	const char ns[] = "1 2 3 1.23 1.234e10 -1.345e-10 .23 1,23 ,23";
+	const char ns[] = "1 2. 3 1.23 1.234e10 -1.345e-10 .23 1,23 ,23";
 	
 	DLOG("--------");
 	const char *s = ns;
