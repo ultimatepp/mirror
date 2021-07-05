@@ -96,6 +96,8 @@ bool Ide::FindLineError(const String& ln, FindLineErrorCache& cache, ErrorInfo& 
 						hs++;
 					f.message = *hs ? hs : ms;
 					f.message = TrimLeft(f.message);
+					if(IsNull(f.message))
+						f.message = ln;
 					Vector<String> conf = SplitFlags(mainconfigparam, true);
 					String uppout = GetVar("OUTPUT");
 					int upplen = uppout.GetLength();
