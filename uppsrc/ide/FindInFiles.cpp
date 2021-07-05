@@ -40,14 +40,15 @@ void Ide::SerializeFindInFiles(Stream& s) {
 		s % ff.workspace;
 }
 
-void SearchForFiles(Index<String>& files, String dir, String mask, int readonly, Progress& pi) {
+void SearchForFiles(Index<String>& files, String dir, String mask, int readonly, Time since, Progress& pi) {
 	FindFile ff(AppendFileName(dir, "*.*"));
 	while(ff) {
 		if(ff.IsFolder() && *ff.GetName() != '.')
-			SearchForFiles(files, AppendFileName(dir, ff.GetName()), mask, readonly, pi);
+			SearchForFiles(files, AppendFileName(dir, ff.GetName()), mask, readonly, since, pi);
 		else
 		if(ff.IsFile() && PatternMatchMulti(mask, ff.GetName())) {
-			if(IsNull(readonly) || !!readonly == !!ff.IsReadOnly()) {
+			if((IsNull(readonly) || !!readonly == !!ff.IsReadOnly()) &&
+			   (IsNull(since) || ff.GetLastWriteTime() >= since)) {
 				if(pi.StepCanceled()) return;
 				files.FindAdd(AppendFileName(dir, ff.GetName()));
 			}
@@ -239,14 +240,18 @@ void Ide::FindInFiles(bool replace) {
 		Progress pi("Found %d files to search.");
 		pi.AlignText(ALIGN_LEFT);
 		Index<String> files;
+		Time since = Null;
+		if(!IsNull(ff.recent))
+			since = ToTime(GetSysDate() - (int)~ff.recent);
 		if(ff.workspace) {
 			const Workspace& wspc = GetIdeWorkspace();
 			for(int i = 0; i < wspc.GetCount(); i++)
 				SearchForFiles(files, GetFileFolder(PackagePath(wspc[i])),
-					           ~ff.files, ~ff.readonly, pi);
+					           ~ff.files, ~ff.readonly, since, pi);
 		}
 		else
-			SearchForFiles(files, NormalizePath(~~ff.folder, GetUppDir()), ~ff.files, ~ff.readonly, pi);
+			SearchForFiles(files, NormalizePath(~~ff.folder, GetUppDir()), ~ff.files,
+			               ~ff.readonly, since, pi);
 		if(!pi.Canceled()) {
 			String pattern;
 			RegExp rx, *regexp = NULL;
@@ -428,6 +433,13 @@ FindInFilesDlg::FindInFilesDlg()
 	readonly.Add(0, "Writable");
 	readonly.Add(1, "Read only");
 	readonly <<= Null;
+	recent <<= Null;
+	recent.Add(Null, "All");
+	recent.Add(1, "1 Day");
+	recent.Add(3, "3 Days");
+	recent.Add(7, "7 Days");
+	recent.Add(14, "14 Days");
+	recent.Add(32, "28 Days");
 	workspace <<= THISBACK(Sync);
 }
 
