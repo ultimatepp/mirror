@@ -252,7 +252,7 @@ force_inline
 void String0::Set(const char *s, int len)
 {
 	Clear();
-	if(len < 14) {
+	if(len <= 14) {
 		memcpy8(chr, s, len);
 		SLen() = len;
 		Dsyn();
@@ -262,9 +262,23 @@ void String0::Set(const char *s, int len)
 	Dsyn();
 }
 
+force_inline
+void String0::Set0(const char *s, int len)
+{
+	Zero();
+	if(len <= 14) {
+		SLen() = len;
+		memcpy8(chr, s, len);
+		Dsyn();
+		return;
+	}
+	SetL(s, len);
+	Dsyn();
+}
+
 inline
 bool String0::IsEqual(const char *s) const
-{ // This optimized for comparison with string literals...
+{ // This is optimized for comparison with string literals...
 	size_t len = strlen(s);
 	const void *p;
 	if(IsSmall()) {

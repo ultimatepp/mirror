@@ -192,18 +192,6 @@ void String0::SetL(const char *s, int len)
 	SLen() = 15;
 }
 
-void String0::Set0(const char *s, int len)
-{
-	Zero();
-	if(len <= 14) {
-		SLen() = len;
-		memcpy8(chr, s, len);
-	}
-	else
-		SetL(s, len);
-	Dsyn();
-}
-
 void String::AssignLen(const char *s, int slen)
 {
 	int  len = GetCount();

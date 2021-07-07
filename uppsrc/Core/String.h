@@ -336,7 +336,7 @@ public:
 	int GetAlloc() const        { return IsSmall() ? 14 : LAlloc(); }
 
 	void Reserve(int r);
-
+	
 //	String0& operator=(const String0& s) { Free(); Set0(s); return *this; }
 
 	String0()                   {}
@@ -397,9 +397,13 @@ public:
 
 	static String GetVoid();
 	bool   IsVoid() const;
+	
+	enum SmallHint { SMALL_HINT };
+	
+	String(const char *s, int n, SmallHint)                { ASSERT(n <= 14); Zero(); SLen() = n; memcpy8(chr, s, n); Dsyn(); }
 
 	friend void Swap(String& a, String& b)                 { a.Swap(b); }
-
+	
 	String(const std::string& s)                           { String0::Set0(s.c_str(), (int)s.length()); }
 	std::string ToStd() const                              { return std::string(Begin(), End()); }
 };
