@@ -194,7 +194,8 @@ Pdb::Context Pdb::ReadContext(HANDLE hThread)
 	}
 	else {
 		static BOOL (WINAPI *Wow64GetThreadContext)(HANDLE hThread, PWOW64_CONTEXT lpContext);
-		DllFn(Wow64GetThreadContext, "Kernel32.dll", "Wow64GetThreadContext");
+		ONCELOCK
+			DllFn(Wow64GetThreadContext, "Kernel32.dll", "Wow64GetThreadContext");
 		
 		WOW64_CONTEXT ctx;
 		ctx.ContextFlags = WOW64_CONTEXT_FULL;

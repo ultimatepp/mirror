@@ -463,7 +463,7 @@ FileTime FileStream::GetTime() const {
 
 bool FileStream::Open(const char *name, dword mode, mode_t tmode) {
 	Close();
-	LLOG("Open " << name);
+	DLOG("Open " << name);
 	int iomode = mode & ~SHAREMASK;
 	handle = open(ToSystemCharset(name), iomode == READ ? O_RDONLY :
 	                    iomode == CREATE ? O_CREAT|O_RDWR|O_TRUNC :

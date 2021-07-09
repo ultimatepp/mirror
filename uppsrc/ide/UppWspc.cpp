@@ -215,6 +215,13 @@ bool PathIsLocal(const String& path)
 
 void WorkspaceWork::LoadActualPackage()
 {
+#ifdef PLATFORM_WIN32
+	static BOOL (WINAPI *PathIsNetworkPathA)(LPCSTR pszPath);
+	ONCELOCK {
+		DllFn(PathIsNetworkPathA, "Shlwapi.dll", "PathIsNetworkPathA");
+	}
+#endif
+
 	Time utime = FileGetTime(ConfigFile("version"));
 	filelist.Clear();
 	fileindex.Clear();
@@ -232,7 +239,11 @@ void WorkspaceWork::LoadActualPackage()
 		if(open) {
 			Color uln = Null;
 			String p = SourcePath(GetActivePackage(), f);
-			if(showtime && (findarg(actualpackage, "<ide-aux>", "<prj-aux>", "<temp-aux>") < 0 || PathIsLocal(p))) {
+			if(showtime && (findarg(actualpackage, "<ide-aux>", "<prj-aux>", "<temp-aux>") < 0 || PathIsLocal(p))
+	#ifdef PLATFORM_WIN32
+			   && !(PathIsNetworkPathA && PathIsNetworkPathA(p))
+	#endif
+			) {
 				FindFile ff(p);
 				if(ff) {
 					Time ftm = Time(ff.GetLastWriteTime());
