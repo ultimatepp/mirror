@@ -373,18 +373,43 @@ void TextCompareCtrl::Paint(Draw& draw)
 		}
 
 		draw.DrawRect(0, y, sz.cx, letter.cy, paper); // paint the end of line
-
 		int x = 0;
-		for(int i = 0; i < hln.GetCount() - 1; ++i) {
+		int ii = 0;
+		while(ii < hln.GetCount() - 1) {
 			Font fnt = font;
-			LineEdit::Highlight& h = hln[i];
+			LineEdit::Highlight& h = hln[ii];
+			int l = 1;
+			while(ii + l < hln.GetCount() - 1 && hln[ii + l].paper == h.paper)
+				l++;
+			draw.DrawRect(n_width - offset.cx + x, y, l * letter.cx, letter.cy, h.paper);
+			x += l * letter.cx;
+			ii += l;
+		}
+		x = 0;
+		ii = 0;
+		Vector<int> dx;
+		while(ii < hln.GetCount() - 1) {
+			Font fnt = font;
+			LineEdit::Highlight& h = hln[ii];
+			WString text;
+			text.Cat(h.chr);
+			for(;;) {
+				int i = ii + text.GetCount();
+				if(i < hln.GetCount() - 1 && hln[i].ink == h.ink && hln[i].font == h.font)
+					text.Cat(hln[i].chr);
+				else
+					break;
+			}
 			fnt.Bold(h.font.IsBold());
 			fnt.Italic(h.font.IsItalic());
 			fnt.Underline(h.font.IsUnderline());
-			int width = fnt[h.chr];
-			draw.DrawRect(n_width - offset.cx + x, y, width, fnt.GetCy(), h.paper);
-			draw.DrawText(n_width - offset.cx + x, y, &h.chr, fnt, h.ink, 1);
-			x += width;
+			dx.SetCount(text.GetCount());
+			dx.Set(0, letter.cx, text.GetCount());
+			
+			draw.DrawText(n_width - offset.cx + x, y, text, fnt, h.ink, dx);
+
+			x += text.GetCount() * letter.cx;
+			ii += text.GetCount();
 		}
 	}
 	int lcy = lcnt * letter.cy - offset.cy;
