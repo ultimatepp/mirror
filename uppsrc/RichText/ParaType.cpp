@@ -317,10 +317,12 @@ RichPara::Lines RichPara::FormatLines(int acx) const
 				t = GetNextTab(cx + format.lm, rcx);
 				space = NULL;
 			}
-			if(cx + *w > rcx && s > text ||
+			if(*s == '\n' || // fieldparts with newline
+			   cx + *w > rcx && s > text ||
 			   *s == '\t' && (t.align == ALIGN_RIGHT ? t.pos - format.lm > rcx
 			                                         : t.pos - format.lm >= rcx)) {
-				Line& l = lines.line.Add();
+				if(*s == '\n') // fieldparts with newline
+					space = NULL;Line& l = lines.line.Add();
 				l.withtabs = withtabs;
 				l.pos = (int)(text - lines.text);
 				if(space) {
