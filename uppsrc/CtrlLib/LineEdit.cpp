@@ -328,7 +328,7 @@ void sOptimizedTextRenderer::DrawChar(int x, int _y, int chr, int width, Font fo
 		LTIMING("Map");
 		c = &cache.GetAdd(MakeTuple(font, color));
 	}
-	if(c->x.GetCount() && c->x.Top() > x) {
+	if(c->x.GetCount() && c->x.Top() > x || font.IsUnderline() && cache.GetCount() > 1) {
 		Flush();
 		c = &cache.GetAdd(MakeTuple(font, color));
 	}

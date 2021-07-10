@@ -79,7 +79,6 @@ void SystemDraw::FlushText()
 	m.font = textfont;
 	m.angle = textangle;
 	FontSysData& sf = cache.Get(m);
-
 	cairo_set_scaled_font(cr, sf.scaled_font);
 
 	SetColor(textink);
