@@ -44,6 +44,8 @@ CONSOLE_APP_MAIN
 	RDUMP(sizeof(float));
 	RDUMP(sizeof(double));
 	RDUMP(sizeof(long double));
+	RDUMP(sizeof(long long));
+	RDUMP(sizeof(unsigned long long));
 	RLOG("========================");
 	RDUMP(sizeof(Date));
 	RDUMP(sizeof(Time));
